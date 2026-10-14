@@ -1,0 +1,317 @@
+
+import os
+import traceback
+
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from source_code.api_models import (
+    AuthResponse,
+    LoginRequest,
+    OTPResponse,
+    RegisterRequest,
+    UserResponse,
+    VerifyOTPRequest,
+)
+
+from source_code.auth_service import (
+    create_access_token,
+    hash_password,
+    validate_password,
+    verify_password,
+)
+
+from source_code.database.user_repository import (
+    create_user,
+    email_exists,
+    get_user_by_username,
+)
+
+from source_code.dependencies import get_current_user
+from source_code.email_service import send_otp_email
+
+from source_code.otp_service import (
+    can_send_otp,
+    create_otp,
+    verify_otp,
+)
+
+
+router = APIRouter(
+    prefix="/api/auth",
+    tags=["Authentication"],
+)
+
+
+# ============================================================
+# REGISTER - SEND OTP
+# ============================================================
+
+@router.post(
+    "/register",
+    response_model=OTPResponse,
+)
+def register(request: RegisterRequest):
+
+    username = request.username.strip()
+    email = str(request.email).strip().lower()
+
+    # Check username
+    existing_user = get_user_by_username(username)
+
+    if existing_user is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Username is already registered.",
+        )
+
+    # Check email
+    if email_exists(email):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email address is already registered.",
+        )
+
+    # Check OTP cooldown
+    if not can_send_otp(email):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=(
+                "A verification code was recently sent. "
+                "Please wait before requesting another code."
+            ),
+        )
+
+    try:
+        # Generate and store OTP
+        otp = create_otp(email)
+
+        if otp is None:
+            raise RuntimeError(
+                "Unable to create the verification code."
+            )
+
+        # Local testing mode: print OTP in backend terminal
+        if os.getenv("OTP_DEV_MODE", "").lower() == "true":
+            print(f"[LOCAL TESTING] OTP for {email}: {otp}")
+
+        else:
+            # Normal mode: send OTP by email
+            email_sent = send_otp_email(
+                email=email,
+                otp=otp,
+            )
+
+            if not email_sent:
+                raise RuntimeError(
+                    "Unable to send the verification email."
+                )
+
+    except Exception as error:
+
+        print("\n" + "=" * 70)
+        print("REGISTRATION / OTP ERROR")
+        print("=" * 70)
+        traceback.print_exc()
+        print("=" * 70 + "\n")
+
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=(
+                "Unable to send the verification email. "
+                "Please try again."
+            ),
+        ) from error
+
+    if os.getenv("OTP_DEV_MODE", "").lower() == "true":
+        message = (
+            "Local testing mode: check the backend terminal "
+            "for your verification code."
+        )
+    else:
+        message = "A verification code has been sent to your email address."
+
+    return OTPResponse(message=message)
+
+
+# ============================================================
+# VERIFY OTP - CREATE USER
+# ============================================================
+
+@router.post(
+    "/verify-otp",
+    response_model=AuthResponse,
+)
+def verify_registration_otp(
+    request: VerifyOTPRequest,
+):
+
+    username = request.username.strip()
+    email = str(request.email).strip().lower()
+    otp = request.otp.strip()
+
+    # Validate OTP format
+    if not otp.isdigit() or len(otp) != 6:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Verification code must contain exactly 6 digits.",
+        )
+
+    # Check username again
+    existing_user = get_user_by_username(username)
+
+    if existing_user is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Username is already registered.",
+        )
+
+    # Check email again
+    if email_exists(email):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email address is already registered.",
+        )
+
+    # Verify OTP
+    if not verify_otp(
+        email=email,
+        otp=otp,
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired verification code.",
+        )
+
+    # Validate password
+    password_error = validate_password(request.password)
+
+    if password_error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=password_error,
+        )
+
+    # Hash password
+    password_hash = hash_password(request.password)
+
+    # Create user
+    try:
+        user = create_user(
+            username=username,
+            email=email,
+            password_hash=password_hash,
+            role=request.role,
+        )
+
+    except Exception as error:
+
+        print("\n" + "=" * 70)
+        print("USER CREATION ERROR")
+        print("=" * 70)
+
+        traceback.print_exc()
+
+        print("=" * 70 + "\n")
+
+        error_message = str(error).lower()
+
+        if "duplicate key" in error_message:
+
+            if "email" in error_message:
+                detail = "Email address is already registered."
+            else:
+                detail = "Username is already registered."
+
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=detail,
+            ) from error
+
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Unable to create the user account.",
+        ) from error
+
+    # Create access token
+    access_token = create_access_token(
+        user_id=user["id"],
+        username=user["username"],
+        role=user["role"],
+    )
+
+    # Return successful registration response
+    return AuthResponse(
+        message="Registration successful.",
+        user=UserResponse(
+            id=user["id"],
+            username=user["username"],
+            role=user["role"],
+        ),
+        access_token=access_token,
+    )
+
+
+# ============================================================
+# LOGIN
+# ============================================================
+
+@router.post(
+    "/login",
+    response_model=AuthResponse,
+)
+def login(request: LoginRequest):
+
+    username = request.username.strip()
+
+    user = get_user_by_username(username)
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password.",
+        )
+
+    if not verify_password(
+        request.password,
+        user["password_hash"],
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password.",
+        )
+
+    access_token = create_access_token(
+        user_id=user["id"],
+        username=user["username"],
+        role=user["role"],
+    )
+
+    return AuthResponse(
+        message="Login successful.",
+        user=UserResponse(
+            id=user["id"],
+            username=user["username"],
+            role=user["role"],
+        ),
+        access_token=access_token,
+    )
+
+
+# ============================================================
+# CURRENT USER
+# ============================================================
+
+@router.get(
+    "/me",
+    response_model=UserResponse,
+)
+def get_me(
+    current_user: dict = Depends(get_current_user),
+):
+
+    return UserResponse(
+        id=current_user["id"],
+        username=current_user["username"],
+        role=current_user["role"],
+    )
+

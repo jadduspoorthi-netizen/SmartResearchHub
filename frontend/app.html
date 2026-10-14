@@ -1,0 +1,5960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>SmartResearch Hub — Research Workspace</title>
+
+    <style>
+        :root {
+            --paper: #f4efe3;
+            --paper-light: #fbf8f0;
+            --paper-deep: #e7decb;
+            --paper-dark: #d8cdb8;
+
+            --ink: #27271f;
+            --ink-soft: #4f4d42;
+            --muted: #777264;
+            --muted-light: #969082;
+
+            --olive: #59604b;
+            --olive-dark: #414837;
+            --olive-soft: #e3e6dc;
+
+            --rust: #a64b32;
+            --rust-dark: #823b28;
+            --rust-soft: #eee0da;
+
+            --gold: #b58a45;
+            --gold-soft: #eee4cf;
+
+            --white: #fffdf7;
+
+            --line: rgba(48, 48, 39, 0.14);
+            --line-strong: rgba(48, 48, 39, 0.26);
+
+            --shadow:
+                0 18px 50px rgba(55, 48, 34, 0.10);
+
+            --sidebar-width: 252px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+
+            min-height: 100vh;
+
+            color: var(--ink);
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            background:
+                radial-gradient(
+                    circle at 80% 0%,
+                    rgba(181, 138, 69, 0.08),
+                    transparent 28%
+                ),
+                var(--paper);
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        ::selection {
+            background: rgba(166, 75, 50, 0.18);
+        }
+
+        /* =====================================================
+           APP SHELL
+        ====================================================== */
+
+        .app-shell {
+            min-height: 100vh;
+
+            display: grid;
+
+            grid-template-columns:
+                var(--sidebar-width)
+                minmax(0, 1fr);
+        }
+
+        /* =====================================================
+           SIDEBAR
+        ====================================================== */
+
+        .sidebar {
+            position: sticky;
+
+            top: 0;
+
+            height: 100vh;
+
+            overflow-y: auto;
+
+            padding: 25px 18px;
+
+            color: #f7f2e7;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #414737 0%,
+                    #2c3027 100%
+                );
+
+            border-right:
+                1px solid rgba(30, 30, 25, 0.18);
+
+            z-index: 20;
+        }
+
+        .sidebar::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            opacity: 0.07;
+
+            pointer-events: none;
+
+            background-image:
+                linear-gradient(
+                    rgba(255,255,255,0.7) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.7) 1px,
+                    transparent 1px
+                );
+
+            background-size: 32px 32px;
+        }
+
+        .sidebar-inner {
+            position: relative;
+
+            min-height: 100%;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding:
+                4px 5px 22px;
+
+            border-bottom:
+                1px solid rgba(247, 242, 231, 0.16);
+        }
+
+        .brand-mark {
+            width: 41px;
+            height: 41px;
+
+            flex: 0 0 auto;
+
+            display: grid;
+            place-items: center;
+
+            border:
+                1px solid rgba(247, 242, 231, 0.42);
+
+            color: #f8f2e4;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 1px;
+        }
+
+        .brand-name {
+            font-size: 14px;
+            font-weight: 700;
+
+            line-height: 1.15;
+        }
+
+        .brand-subtitle {
+            margin-top: 4px;
+
+            color: rgba(247, 242, 231, 0.55);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 7px;
+
+            line-height: 1.3;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-label {
+            margin:
+                25px 7px 9px;
+
+            color: rgba(247, 242, 231, 0.43);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1.6px;
+        }
+
+        .nav {
+            display: grid;
+
+            gap: 4px;
+        }
+
+        .nav-button {
+            width: 100%;
+
+            min-height: 42px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding:
+                0 11px;
+
+            border:
+                1px solid transparent;
+
+            color: rgba(247, 242, 231, 0.72);
+
+            background: transparent;
+
+            text-align: left;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            transition:
+                background 0.16s ease,
+                color 0.16s ease,
+                border-color 0.16s ease;
+        }
+
+        .nav-button:hover {
+            color: #fffaf0;
+
+            background:
+                rgba(255, 255, 255, 0.07);
+        }
+
+        .nav-button.active {
+            color: #fffaf0;
+
+            border-color:
+                rgba(181, 138, 69, 0.26);
+
+            background:
+                rgba(181, 138, 69, 0.13);
+        }
+
+        .nav-icon {
+            width: 22px;
+
+            color: #d7bd83;
+
+            font-size: 13px;
+
+            text-align: center;
+        }
+
+        .sidebar-spacer {
+            flex: 1;
+        }
+
+        .user-card {
+            margin-top: 25px;
+
+            padding:
+                12px;
+
+            border:
+                1px solid rgba(247, 242, 231, 0.14);
+
+            background:
+                rgba(255, 255, 255, 0.045);
+        }
+
+        .user-label {
+            color: rgba(247, 242, 231, 0.43);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 7px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+        }
+
+        .user-name {
+            margin-top: 5px;
+
+            color: #fffaf0;
+
+            font-size: 12px;
+
+            word-break: break-word;
+        }
+
+        .user-role {
+            display: inline-block;
+
+            margin-top: 6px;
+
+            padding:
+                4px 7px;
+
+            color: #ddc18b;
+
+            border:
+                1px solid rgba(181, 138, 69, 0.30);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 7px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .logout-button {
+            width: 100%;
+
+            min-height: 38px;
+
+            margin-top: 8px;
+
+            border:
+                1px solid rgba(247, 242, 231, 0.15);
+
+            color: rgba(247, 242, 231, 0.68);
+
+            background: transparent;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logout-button:hover {
+            color: #fff;
+
+            border-color:
+                rgba(166, 75, 50, 0.55);
+
+            background:
+                rgba(166, 75, 50, 0.12);
+        }
+
+        /* =====================================================
+           MOBILE HEADER
+        ====================================================== */
+
+        .mobile-header {
+            display: none;
+        }
+
+        /* =====================================================
+           MAIN
+        ====================================================== */
+
+        .main {
+            min-width: 0;
+
+            padding:
+                28px 34px 60px;
+        }
+
+        .main-inner {
+            width: min(1320px, 100%);
+
+            margin: 0 auto;
+        }
+
+        /* =====================================================
+           TOP BAR
+        ====================================================== */
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding-bottom: 20px;
+
+            border-bottom:
+                1px solid var(--line);
+        }
+
+        .page-kicker {
+            color: var(--olive);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+        }
+
+        .topbar h1 {
+            margin: 6px 0 0;
+
+            font-size:
+                clamp(30px, 4vw, 48px);
+
+            line-height: 1;
+
+            letter-spacing: -1.7px;
+        }
+
+        .topbar-meta {
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+            justify-content: flex-end;
+        }
+
+        .meta-badge {
+            padding:
+                7px 9px;
+
+            border:
+                1px solid var(--line);
+
+            color: var(--muted);
+
+            background:
+                rgba(255,255,255,0.28);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 8px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+        }
+
+        .meta-badge.admin {
+            color: var(--rust-dark);
+
+            border-color:
+                rgba(166, 75, 50, 0.20);
+
+            background:
+                var(--rust-soft);
+        }
+
+        /* =====================================================
+           SECTIONS
+        ====================================================== */
+
+        .section {
+            display: none;
+
+            padding-top: 28px;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+
+            font-size: 25px;
+
+            letter-spacing: -0.8px;
+        }
+
+        .section-heading p {
+            max-width: 520px;
+
+            margin: 5px 0 0;
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+            line-height: 1.55;
+        }
+
+        .section-tools {
+            display: flex;
+            align-items: center;
+
+            gap: 7px;
+
+            flex-wrap: wrap;
+        }
+
+        /* =====================================================
+           CARDS
+        ====================================================== */
+
+        .card {
+            border:
+                1px solid var(--line);
+
+            background:
+                rgba(255, 253, 247, 0.64);
+
+            box-shadow:
+                0 10px 30px rgba(55, 48, 34, 0.045);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding:
+                14px 16px;
+
+            border-bottom:
+                1px solid var(--line);
+        }
+
+        .card-title {
+            color: var(--ink);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        /* =====================================================
+           DASHBOARD
+        ====================================================== */
+
+        .hero {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1.35fr)
+                minmax(260px, 0.65fr);
+
+            gap: 16px;
+
+            margin-bottom: 16px;
+        }
+
+        .hero-main {
+            position: relative;
+
+            min-height: 270px;
+
+            overflow: hidden;
+
+            padding: 28px;
+
+            color: #f9f3e7;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3e4535,
+                    #292c25
+                );
+        }
+
+        .hero-main::after {
+            content: "SR";
+
+            position: absolute;
+
+            right: -18px;
+            bottom: -45px;
+
+            color: rgba(255,255,255,0.035);
+
+            font-size: 190px;
+            font-weight: 700;
+
+            line-height: 1;
+        }
+
+        .hero-main .eyebrow {
+            color: #d7bd83;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+        }
+
+        .hero-main h2 {
+            position: relative;
+            z-index: 2;
+
+            max-width: 680px;
+
+            margin: 15px 0 0;
+
+            font-size:
+                clamp(31px, 4vw, 52px);
+
+            line-height: 1.01;
+
+            letter-spacing: -1.9px;
+        }
+
+        .hero-main p {
+            position: relative;
+            z-index: 2;
+
+            max-width: 620px;
+
+            margin: 15px 0 0;
+
+            color: rgba(249,243,231,0.68);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            position: relative;
+            z-index: 3;
+
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+            margin-top: 22px;
+        }
+
+        .hero-side {
+            padding: 20px;
+
+            background:
+                var(--paper-deep);
+        }
+
+        .hero-side-label {
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .hero-stat {
+            margin-top: 10px;
+
+            font-size: 48px;
+
+            line-height: 1;
+
+            letter-spacing: -2px;
+
+            color: var(--olive-dark);
+        }
+
+        .hero-stat-text {
+            margin-top: 5px;
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+        }
+
+        .stat-card {
+            padding: 16px;
+
+            border:
+                1px solid var(--line);
+
+            background:
+                rgba(255,253,247,0.60);
+        }
+
+        .stat-number {
+            font-size: 29px;
+
+            color: var(--olive-dark);
+
+            line-height: 1;
+        }
+
+        .stat-label {
+            margin-top: 7px;
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* =====================================================
+           SEARCH
+        ====================================================== */
+
+        .search-card {
+            padding: 20px;
+        }
+
+        .search-form {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                130px
+                auto;
+
+            gap: 9px;
+        }
+
+        .input,
+        .select,
+        .textarea {
+            width: 100%;
+
+            border:
+                1px solid var(--line-strong);
+
+            outline: none;
+
+            border-radius: 0;
+
+            color: var(--ink);
+
+            background:
+                rgba(255,255,255,0.54);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 11px;
+
+            transition:
+                border-color 0.16s ease,
+                box-shadow 0.16s ease,
+                background 0.16s ease;
+        }
+
+        .input,
+        .select {
+            min-height: 45px;
+
+            padding:
+                0 12px;
+        }
+
+        .textarea {
+            min-height: 120px;
+
+            padding:
+                12px;
+
+            resize: vertical;
+
+            line-height: 1.6;
+        }
+
+        .input:focus,
+        .select:focus,
+        .textarea:focus {
+            border-color: var(--olive);
+
+            background: #fffdf8;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(89, 96, 75, 0.08);
+        }
+
+        .button {
+            min-height: 43px;
+
+            padding:
+                0 15px;
+
+            border:
+                1px solid var(--olive);
+
+            color: #faf7ef;
+
+            background:
+                var(--olive);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+
+            transition:
+                transform 0.16s ease,
+                filter 0.16s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+
+            filter: brightness(1.06);
+        }
+
+        .button.secondary {
+            color: var(--olive-dark);
+
+            background:
+                transparent;
+        }
+
+        .button.rust {
+            border-color: var(--rust);
+
+            background: var(--rust);
+        }
+
+        .button.danger {
+            border-color: var(--rust);
+
+            color: var(--rust-dark);
+
+            background:
+                transparent;
+        }
+
+        .button.gold {
+            border-color: var(--gold);
+
+            color: #fffaf0;
+
+            background: var(--gold);
+        }
+
+        .button.small {
+            min-height: 32px;
+
+            padding:
+                0 10px;
+
+            font-size: 7px;
+        }
+
+        .button:disabled {
+            opacity: 0.55;
+
+            cursor: wait;
+
+            transform: none;
+        }
+
+        .search-status {
+            min-height: 18px;
+
+            margin-top: 12px;
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+        }
+
+        .results {
+            display: grid;
+
+            gap: 10px;
+
+            margin-top: 12px;
+        }
+
+        .result-card {
+            padding: 16px;
+
+            border:
+                1px solid var(--line);
+
+            background:
+                rgba(255,253,247,0.70);
+        }
+
+        .result-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 15px;
+        }
+
+        .result-title {
+            margin: 0;
+
+            font-size: 17px;
+
+            line-height: 1.25;
+        }
+
+        .result-score {
+            flex: 0 0 auto;
+
+            padding:
+                5px 7px;
+
+            color: var(--olive-dark);
+
+            border:
+                1px solid rgba(89,96,75,0.18);
+
+            background:
+                var(--olive-soft);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 7px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+        }
+
+        .result-meta {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 6px;
+
+            margin-top: 8px;
+        }
+
+        .tag {
+            padding:
+                4px 6px;
+
+            border:
+                1px solid var(--line);
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 7px;
+
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .result-abstract {
+            margin: 12px 0 0;
+
+            color: var(--ink-soft);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+            line-height: 1.65;
+        }
+
+        .result-actions {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 6px;
+
+            margin-top: 13px;
+        }
+
+        .empty {
+            padding:
+                35px 20px;
+
+            border:
+                1px dashed var(--line-strong);
+
+            color: var(--muted);
+
+            text-align: center;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           QA
+        ====================================================== */
+
+        .qa-layout {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 0.82fr)
+                minmax(0, 1.18fr);
+
+            gap: 14px;
+        }
+
+        .qa-form-card {
+            padding: 19px;
+        }
+
+        .form-label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: var(--ink-soft);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .qa-submit {
+            width: 100%;
+
+            margin-top: 9px;
+        }
+
+        .answer-card {
+            min-height: 320px;
+
+            padding: 20px;
+        }
+
+        .answer-label {
+            color: var(--olive);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+        }
+
+        .answer-text {
+            margin-top: 13px;
+
+            color: var(--ink);
+
+            font-size: 17px;
+
+            line-height: 1.65;
+        }
+
+        .sources-heading {
+            margin-top: 25px;
+
+            padding-top: 15px;
+
+            border-top:
+                1px solid var(--line);
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sources {
+            display: grid;
+
+            gap: 6px;
+
+            margin-top: 9px;
+        }
+
+        .source-item {
+            padding:
+                8px 9px;
+
+            border-left:
+                2px solid var(--gold);
+
+            color: var(--ink-soft);
+
+            background:
+                rgba(181,138,69,0.06);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+        }
+
+        /* =====================================================
+           REPOSITORY
+        ====================================================== */
+
+        .repository-toolbar {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                180px
+                auto;
+
+            gap: 8px;
+
+            margin-bottom: 14px;
+        }
+
+        .paper-list {
+            display: grid;
+
+            gap: 9px;
+        }
+
+        .paper-row {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                auto;
+
+            gap: 16px;
+
+            padding:
+                15px 16px;
+
+            border:
+                1px solid var(--line);
+
+            background:
+                rgba(255,253,247,0.65);
+        }
+
+        .paper-title {
+            margin: 0;
+
+            font-size: 16px;
+
+            line-height: 1.3;
+        }
+
+        .paper-details {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 6px;
+
+            margin-top: 7px;
+        }
+
+        .paper-abstract {
+            margin: 9px 0 0;
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+
+            line-height: 1.55;
+        }
+
+        .paper-actions {
+            display: flex;
+
+            align-items: flex-start;
+            justify-content: flex-end;
+
+            gap: 5px;
+
+            flex-wrap: wrap;
+        }
+
+        /* =====================================================
+           ADMIN
+        ====================================================== */
+
+        .admin-grid {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 0.7fr)
+                minmax(0, 1.3fr);
+
+            gap: 14px;
+        }
+
+        .upload-card {
+            padding: 19px;
+        }
+
+        .upload-zone {
+            margin-top: 7px;
+
+            padding: 22px 15px;
+
+            border:
+                1px dashed var(--line-strong);
+
+            text-align: center;
+
+            background:
+                rgba(255,255,255,0.30);
+        }
+
+        .upload-zone input[type="file"] {
+            width: 100%;
+
+            margin-top: 10px;
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+        }
+
+        .admin-list {
+            display: grid;
+
+            gap: 7px;
+
+            max-height: 640px;
+
+            overflow-y: auto;
+        }
+
+        .admin-row {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                auto;
+
+            gap: 10px;
+
+            padding:
+                11px 12px;
+
+            border:
+                1px solid var(--line);
+
+            background:
+                rgba(255,253,247,0.62);
+        }
+
+        .admin-row-title {
+            font-size: 13px;
+        }
+
+        .admin-row-meta {
+            margin-top: 4px;
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 8px;
+        }
+
+        .admin-row-actions {
+            display: flex;
+            align-items: center;
+
+            gap: 5px;
+        }
+
+        /* =====================================================
+           MODAL
+        ====================================================== */
+
+        .modal {
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 100;
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 22px;
+
+            background:
+                rgba(36, 35, 29, 0.62);
+
+            backdrop-filter:
+                blur(3px);
+        }
+
+        .modal.visible {
+            display: flex;
+        }
+
+        .modal-card {
+            width: min(620px, 100%);
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            padding: 21px;
+
+            border:
+                1px solid rgba(255,255,255,0.25);
+
+            background:
+                var(--paper-light);
+
+            box-shadow:
+                0 30px 90px rgba(0,0,0,0.24);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding-bottom: 14px;
+
+            border-bottom:
+                1px solid var(--line);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+
+            font-size: 22px;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+
+            border:
+                1px solid var(--line);
+
+            color: var(--muted);
+
+            background: transparent;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+        .modal-close:hover {
+            color: var(--rust);
+
+            border-color:
+                rgba(166,75,50,0.3);
+        }
+
+        .modal-body {
+            padding-top: 17px;
+        }
+
+        .modal-field {
+            margin-bottom: 13px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+
+            gap: 7px;
+
+            margin-top: 17px;
+        }
+
+        /* =====================================================
+           TOAST
+        ====================================================== */
+
+        .toast {
+            position: fixed;
+
+            right: 22px;
+            bottom: 22px;
+
+            z-index: 200;
+
+            max-width: 360px;
+
+            display: none;
+
+            padding:
+                12px 14px;
+
+            border:
+                1px solid var(--line);
+
+            color: var(--ink);
+
+            background:
+                var(--paper-light);
+
+            box-shadow:
+                var(--shadow);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+
+            line-height: 1.5;
+        }
+
+        .toast.visible {
+            display: block;
+        }
+
+        .toast.success {
+            border-left:
+                3px solid var(--olive);
+        }
+
+        .toast.error {
+            border-left:
+                3px solid var(--rust);
+        }
+
+        /* =====================================================
+           LOADING
+        ====================================================== */
+
+        .loading {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 7px;
+        }
+
+        .spinner {
+            width: 11px;
+            height: 11px;
+
+            border:
+                2px solid rgba(255,255,255,0.35);
+
+            border-top-color:
+                currentColor;
+
+            border-radius: 50%;
+
+            animation:
+                spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =====================================================
+           HIDDEN
+        ====================================================== */
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 1050px) {
+
+            :root {
+                --sidebar-width: 220px;
+            }
+
+            .main {
+                padding:
+                    24px 23px 50px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .qa-layout,
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 780px) {
+
+            .app-shell {
+                display: block;
+            }
+
+            .sidebar {
+                position: fixed;
+
+                left: 0;
+                top: 0;
+                bottom: 0;
+
+                width: 275px;
+
+                transform:
+                    translateX(-100%);
+
+                transition:
+                    transform 0.22s ease;
+
+                box-shadow:
+                    10px 0 40px rgba(0,0,0,0.16);
+            }
+
+            .sidebar.open {
+                transform:
+                    translateX(0);
+            }
+
+            .mobile-header {
+                position: sticky;
+
+                top: 0;
+
+                z-index: 30;
+
+                min-height: 62px;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                padding:
+                    0 17px;
+
+                border-bottom:
+                    1px solid var(--line);
+
+                background:
+                    rgba(244,239,227,0.95);
+
+                backdrop-filter:
+                    blur(8px);
+            }
+
+            .mobile-brand {
+                font-size: 15px;
+                font-weight: 700;
+            }
+
+            .menu-button {
+                width: 38px;
+                height: 38px;
+
+                border:
+                    1px solid var(--line);
+
+                color: var(--olive-dark);
+
+                background:
+                    transparent;
+
+                font-family:
+                    Arial,
+                    Helvetica,
+                    sans-serif;
+
+                font-size: 15px;
+            }
+
+            .main {
+                padding:
+                    20px 16px 45px;
+            }
+
+            .topbar {
+                display: block;
+            }
+
+            .topbar-meta {
+                justify-content: flex-start;
+
+                margin-top: 14px;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+
+            .repository-toolbar {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-heading {
+                display: block;
+            }
+        }
+
+        @media (max-width: 560px) {
+
+            .hero-main {
+                min-height: 310px;
+
+                padding: 21px;
+            }
+
+            .hero-main h2 {
+                font-size: 34px;
+            }
+
+            .paper-row {
+                grid-template-columns: 1fr;
+            }
+
+            .paper-actions {
+                justify-content: flex-start;
+            }
+
+            .admin-row {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-row-actions {
+                justify-content: flex-start;
+            }
+
+            .result-top {
+                display: block;
+            }
+
+            .result-score {
+                display: inline-block;
+
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <div class="sidebar-inner">
+
+            <div class="brand">
+
+                <div class="brand-mark">
+                    SR
+                </div>
+
+                <div>
+
+                    <div class="brand-name">
+                        SmartResearch Hub
+                    </div>
+
+                    <div class="brand-subtitle">
+                        Semantic Knowledge Repository
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="nav-label">
+                Research Workspace
+            </div>
+
+
+            <nav class="nav">
+
+                <button
+                    class="nav-button active"
+                    data-section="dashboard"
+                    type="button"
+                >
+                    <span class="nav-icon">⌂</span>
+                    Dashboard
+                </button>
+
+                <button
+                    class="nav-button"
+                    data-section="search"
+                    type="button"
+                >
+                    <span class="nav-icon">⌕</span>
+                     Search
+                </button>
+
+
+                <button
+                    class="nav-button"
+                    data-section="qa"
+                    type="button"
+                >
+                    <span class="nav-icon">?</span>
+                    Research Q&amp;A
+                </button>
+
+
+                <button
+                    class="nav-button"
+                    data-section="repository"
+                    type="button"
+                >
+                    <span class="nav-icon">▤</span>
+                    Repository
+                </button>
+
+            </nav>
+
+
+            <div
+                class="nav-label admin-only hidden"
+            >
+                Administration
+            </div>
+
+
+            <nav
+                class="nav admin-only hidden"
+                id="adminNavigation"
+            >
+
+                <button
+                    class="nav-button"
+                    data-section="admin"
+                    type="button"
+                >
+                    <span class="nav-icon">⚙</span>
+                    Repository Management
+                </button>
+
+            </nav>
+
+
+            <div class="sidebar-spacer"></div>
+
+
+            <div class="user-card">
+
+                <div class="user-label">
+                    Current Researcher
+                </div>
+
+                <div
+                    class="user-name"
+                    id="sidebarUsername"
+                >
+                    —
+                </div>
+
+                <div
+                    class="user-role"
+                    id="sidebarRole"
+                >
+                    —
+                </div>
+
+                <button
+                    class="logout-button"
+                    id="logoutButton"
+                    type="button"
+                >
+                    Sign Out
+                </button>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MOBILE HEADER
+    ====================================================== -->
+
+    <header class="mobile-header">
+
+        <div class="mobile-brand">
+            SmartResearch Hub
+        </div>
+
+        <button
+            class="menu-button"
+            id="menuButton"
+            type="button"
+            aria-label="Open navigation"
+        >
+            ☰
+        </button>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main">
+
+        <div class="main-inner">
+
+
+            <!-- TOP BAR -->
+
+            <header class="topbar">
+
+                <div>
+
+                    <div class="page-kicker">
+                        Research Intelligence Platform
+                    </div>
+
+                    <h1 id="pageTitle">
+                        Research Workspace
+                    </h1>
+
+                </div>
+
+
+                <div class="topbar-meta">
+
+                    <span
+                        class="meta-badge"
+                        id="topUsername"
+                    >
+                        —
+                    </span>
+
+                    <span
+                        class="meta-badge"
+                        id="topRole"
+                    >
+                        —
+                    </span>
+
+                </div>
+
+            </header>
+
+
+            <!-- =================================================
+                 DASHBOARD
+            ================================================== -->
+
+            <section
+                class="section active"
+                id="section-dashboard"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Welcome to the archive.
+                        </h2>
+
+                        <p>
+                            Search research by semantic meaning,
+                            ask questions over retrieved context,
+                            and explore the paper repository.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="hero">
+
+                    <div class="hero-main card">
+
+                        <div class="eyebrow">
+                            SmartResearch Hub
+                        </div>
+
+                        <h2>
+                            From questions
+                            to meaningful
+                            research.
+                        </h2>
+
+                        <p>
+                            The workspace combines semantic
+                            embeddings, vector retrieval,
+                            research documents and
+                            retrieval-augmented question
+                            answering into one academic
+                            knowledge environment.
+                        </p>
+
+
+                        <div class="hero-actions">
+
+                            <button
+                                class="button"
+                                type="button"
+                                data-go-section="search"
+                            >
+                                Search Papers
+                            </button>
+
+                            <button
+                                class="button secondary"
+                                type="button"
+                                data-go-section="qa"
+                            >
+                                Ask Research Q&amp;A
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="hero-side card">
+
+                        <div class="hero-side-label">
+                            Repository Records
+                        </div>
+
+                        <div
+                            class="hero-stat"
+                            id="dashboardPaperCount"
+                        >
+                            —
+                        </div>
+
+                        <div class="hero-stat-text">
+                            Research papers currently
+                            available in the repository.
+                        </div>
+
+                        <button
+                            class="button secondary small"
+                            type="button"
+                            data-go-section="repository"
+                            style="margin-top:18px;"
+                        >
+                            Browse Repository
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+
+                        <div
+                            class="stat-number"
+                            id="statPapers"
+                        >
+                            —
+                        </div>
+
+                        <div class="stat-label">
+                            Papers
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div
+                            class="stat-number"
+                            id="statDomains"
+                        >
+                            —
+                        </div>
+
+                        <div class="stat-label">
+                            Research Domains
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div
+                            class="stat-number"
+                            id="statRole"
+                        >
+                            —
+                        </div>
+
+                        <div class="stat-label">
+                            Access Level
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SEMANTIC SEARCH
+            ================================================== -->
+
+            <section
+                class="section"
+                id="section-search"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Semantic Paper Search
+                        </h2>
+
+                        <p>
+                            Search by concepts and meaning rather
+                            than relying only on exact keyword
+                            matches.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card search-card">
+
+                    <form
+                        class="search-form"
+                        id="searchForm"
+                    >
+
+                        <input
+                            class="input"
+                            id="searchInput"
+                            type="text"
+                            placeholder="Example: machine learning methods for image classification"
+                            autocomplete="off"
+                            required
+                        >
+
+
+                        <select
+                            class="select"
+                            id="searchTopK"
+                            aria-label="Number of results"
+                        >
+                            <option value="5">
+                                5 results
+                            </option>
+
+                            <option value="10">
+                                10 results
+                            </option>
+
+                            <option value="15">
+                                15 results
+                            </option>
+
+                            <option value="20">
+                                20 results
+                            </option>
+                        </select>
+
+
+                        <button
+                            class="button"
+                            id="searchButton"
+                            type="submit"
+                        >
+                            Search
+                        </button>
+
+                    </form>
+
+
+                    <div
+                        class="search-status"
+                        id="searchStatus"
+                    ></div>
+
+                </div>
+
+
+                <div
+                    class="results"
+                    id="searchResults"
+                >
+
+                    <div class="empty">
+                        Enter a research query to begin semantic
+                        discovery.
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 RESEARCH Q&A
+            ================================================== -->
+
+            <section
+                class="section"
+                id="section-qa"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Research Q&amp;A
+                        </h2>
+
+                        <p>
+                            Ask a research question. The system
+                            retrieves relevant paper context and
+                            generates an answer with supporting
+                            sources.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="qa-layout">
+
+                    <div class="card qa-form-card">
+
+                        <form id="qaForm">
+
+                            <label
+                                class="form-label"
+                                for="qaQuestion"
+                            >
+                                Research Question
+                            </label>
+
+                            <textarea
+                                class="textarea"
+                                id="qaQuestion"
+                                placeholder="Example: What are the main challenges of machine learning in healthcare?"
+                                required
+                            ></textarea>
+
+
+                            <label
+                                class="form-label"
+                                for="qaTopK"
+                                style="margin-top:15px;"
+                            >
+                                Context Documents
+                            </label>
+
+                            <select
+                                class="select"
+                                id="qaTopK"
+                            >
+                                <option value="3">
+                                    3 sources
+                                </option>
+
+                                <option value="5" selected>
+                                    5 sources
+                                </option>
+
+                                <option value="8">
+                                    8 sources
+                                </option>
+
+                                <option value="10">
+                                    10 sources
+                                </option>
+                            </select>
+
+
+                            <button
+                                class="button qa-submit"
+                                id="qaButton"
+                                type="submit"
+                            >
+                                Ask Research Question
+                            </button>
+
+                        </form>
+
+
+                        <div
+                            class="search-status"
+                            id="qaStatus"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="card answer-card">
+
+                        <div class="answer-label">
+                            Retrieved Research Answer
+                        </div>
+
+                        <div
+                            class="answer-text"
+                            id="qaAnswer"
+                        >
+                            Ask a question to generate a
+                            context-aware research answer.
+                        </div>
+
+
+                        <div
+                            class="sources-heading"
+                            id="sourcesHeading"
+                        >
+                            Supporting Sources
+                        </div>
+
+
+                        <div
+                            class="sources"
+                            id="qaSources"
+                        >
+
+                            <div class="empty">
+                                Sources will appear here after a
+                                question is answered.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 REPOSITORY
+            ================================================== -->
+
+            <section
+                class="section"
+                id="section-repository"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Research Repository
+                        </h2>
+
+                        <p>
+                            Browse available papers, filter by
+                            domain, and open the original PDF.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="repository-toolbar">
+
+                    <input
+                        class="input"
+                        id="repositoryQuery"
+                        type="text"
+                        placeholder="Filter papers by title, author or keyword..."
+                    >
+
+
+                    <select
+                        class="select"
+                        id="repositoryDomain"
+                    >
+                        <option value="">
+                            All domains
+                        </option>
+                    </select>
+
+
+                    <button
+                        class="button"
+                        id="repositoryRefresh"
+                        type="button"
+                    >
+                        Refresh
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="search-status"
+                    id="repositoryStatus"
+                ></div>
+
+
+                <div
+                    class="paper-list"
+                    id="repositoryList"
+                >
+
+                    <div class="empty">
+                        Loading repository...
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 ADMIN
+            ================================================== -->
+
+            <section
+                class="section"
+                id="section-admin"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Repository Management
+                        </h2>
+
+                        <p>
+                            Administrator tools for adding,
+                            updating and removing research
+                            documents.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-grid">
+
+                    <!-- UPLOAD -->
+
+                    <div class="card upload-card">
+
+                        <div class="card-title">
+                            Add Research Paper
+                        </div>
+
+
+                        <form
+                            id="uploadForm"
+                            style="margin-top:17px;"
+                        >
+
+                            <div class="modal-field">
+
+                                <label
+                                    class="form-label"
+                                    for="uploadTitle"
+                                >
+                                    Title
+                                </label>
+
+                                <input
+                                    class="input"
+                                    id="uploadTitle"
+                                    type="text"
+                                    maxlength="500"
+                                    placeholder="Research paper title"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="modal-field">
+
+                                <label
+                                    class="form-label"
+                                    for="uploadAuthors"
+                                >
+                                    Authors
+                                </label>
+
+                                <input
+                                    class="input"
+                                    id="uploadAuthors"
+                                    type="text"
+                                    maxlength="1000"
+                                    placeholder="Author names"
+                                >
+
+                            </div>
+
+
+                            <div class="modal-field">
+
+                                <label
+                                    class="form-label"
+                                    for="uploadDomain"
+                                >
+                                    Domain
+                                </label>
+
+                                <input
+                                    class="input"
+                                    id="uploadDomain"
+                                    type="text"
+                                    maxlength="200"
+                                    placeholder="e.g. Machine Learning"
+                                >
+
+                            </div>
+
+
+                            <div class="modal-field">
+
+                                <label
+                                    class="form-label"
+                                    for="uploadYear"
+                                >
+                                    Publication Year
+                                </label>
+
+                                <input
+                                    class="input"
+                                    id="uploadYear"
+                                    type="number"
+                                    min="1800"
+                                    max="2200"
+                                    placeholder="2026"
+                                >
+
+                            </div>
+
+
+                            <div class="modal-field">
+
+                                <label
+                                    class="form-label"
+                                    for="uploadAbstract"
+                                >
+                                    Abstract
+                                </label>
+
+                                <textarea
+                                    class="textarea"
+                                    id="uploadAbstract"
+                                    placeholder="Optional paper abstract..."
+                                ></textarea>
+
+                            </div>
+
+
+                            <div class="upload-zone">
+
+                                <div
+                                    class="form-label"
+                                    style="margin-bottom:0;"
+                                >
+                                    PDF Document
+                                </div>
+
+                                <input
+                                    id="uploadFile"
+                                    type="file"
+                                    accept=".pdf,application/pdf"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <button
+                                class="button"
+                                id="uploadButton"
+                                type="submit"
+                                style="width:100%;margin-top:12px;"
+                            >
+                                Upload Paper
+                            </button>
+
+                        </form>
+
+
+                        <div
+                            class="search-status"
+                            id="uploadStatus"
+                        ></div>
+
+                    </div>
+
+
+                    <!-- MANAGE -->
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <div class="card-title">
+                                Existing Papers
+                            </div>
+
+                            <button
+                                class="button secondary small"
+                                id="adminRefresh"
+                                type="button"
+                            >
+                                Refresh
+                            </button>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+                            <div
+                                class="admin-list"
+                                id="adminList"
+                            >
+
+                                <div class="empty">
+                                    Loading papers...
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     EDIT MODAL
+========================================================== -->
+
+<div
+    class="modal"
+    id="editModal"
+    aria-hidden="true"
+>
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h3>
+                    Update Research Paper
+                </h3>
+
+            </div>
+
+            <button
+                class="modal-close"
+                id="editClose"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <form id="editForm">
+
+                <input
+                    id="editId"
+                    type="hidden"
+                >
+
+
+                <div class="modal-field">
+
+                    <label
+                        class="form-label"
+                        for="editTitle"
+                    >
+                        Title
+                    </label>
+
+                    <input
+                        class="input"
+                        id="editTitle"
+                        type="text"
+                        maxlength="500"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="modal-field">
+                    <label
+                        class="form-label"
+                        for="editAuthors"
+                    >
+                        Authors
+                    </label>
+
+                    <input
+                        class="input"
+                        id="editAuthors"
+                        type="text"
+                        maxlength="1000"
+                    >
+
+                </div>
+
+
+                <div class="modal-field">
+
+                    <label
+                        class="form-label"
+                        for="editDomain"
+                    >
+                        Domain
+                    </label>
+
+                    <input
+                        class="input"
+                        id="editDomain"
+                        type="text"
+                        maxlength="200"
+                    >
+
+                </div>
+
+
+                <div class="modal-field">
+
+                    <label
+                        class="form-label"
+                        for="editYear"
+                    >
+                        Publication Year
+                    </label>
+
+                    <input
+                        class="input"
+                        id="editYear"
+                        type="number"
+                        min="1800"
+                        max="2200"
+                    >
+
+                </div>
+
+
+                <div class="modal-field">
+
+                    <label
+                        class="form-label"
+                        for="editAbstract"
+                    >
+                        Abstract
+                    </label>
+
+                    <textarea
+                        class="textarea"
+                        id="editAbstract"
+                    ></textarea>
+
+                </div>
+
+
+                <div
+                    class="search-status"
+                    id="editStatus"
+                ></div>
+
+
+                <div class="modal-actions">
+
+                    <button
+                        class="button secondary"
+                        id="editCancel"
+                        type="button"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        class="button"
+                        id="editSave"
+                        type="submit"
+                    >
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     TOAST
+========================================================== -->
+
+<div
+    class="toast"
+    id="toast"
+    role="status"
+    aria-live="polite"
+></div>
+
+
+<script>
+    /* =========================================================
+       CONFIGURATION
+    ========================================================== */
+
+    const TOKEN_KEY =
+        "smartresearch_access_token";
+
+    const USER_KEY =
+        "smartresearch_user";
+
+
+    let currentUser = null;
+
+    let papers = [];
+
+    let domains = [];
+
+    let currentSection = "dashboard";
+
+
+    /* =========================================================
+       DOM HELPERS
+    ========================================================== */
+
+    const $ = id =>
+        document.getElementById(id);
+
+
+    function escapeHtml(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+            return "";
+        }
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    function truncate(
+        value,
+        length = 280
+    ) {
+
+        const text =
+            String(value || "")
+                .trim();
+
+        if (
+            text.length <= length
+        ) {
+            return text;
+        }
+
+        return (
+            text.slice(
+                0,
+                length
+            ).trim() +
+            "..."
+        );
+    }
+
+
+    function normalizeArray(
+        data
+    ) {
+
+        if (
+            Array.isArray(data)
+        ) {
+            return data;
+        }
+
+        if (
+            data &&
+            Array.isArray(data.results)
+        ) {
+            return data.results;
+        }
+
+        if (
+            data &&
+            Array.isArray(data.items)
+        ) {
+            return data.items;
+        }
+
+        if (
+            data &&
+            Array.isArray(data.papers)
+        ) {
+            return data.papers;
+        }
+
+        return [];
+    }
+
+
+    function getToken() {
+
+        return (
+            sessionStorage.getItem(
+                TOKEN_KEY
+            ) ||
+            localStorage.getItem(
+                TOKEN_KEY
+            )
+        );
+    }
+
+
+    function getStoredUser() {
+
+        const raw =
+            sessionStorage.getItem(
+                USER_KEY
+            ) ||
+            localStorage.getItem(
+                USER_KEY
+            );
+
+        if (!raw) {
+            return null;
+        }
+
+        try {
+            return JSON.parse(raw);
+        } catch {
+            return null;
+        }
+    }
+
+
+    /* =========================================================
+       API
+    ========================================================== */
+
+    async function api(
+        url,
+        options = {}
+    ) {
+
+        const token =
+            getToken();
+
+
+        const headers =
+            new Headers(
+                options.headers || {}
+            );
+
+
+        if (
+            token &&
+            !headers.has(
+                "Authorization"
+            )
+        ) {
+
+            headers.set(
+                "Authorization",
+                `Bearer ${token}`
+            );
+        }
+
+
+        /*
+         * Do not force JSON content type for FormData.
+         */
+
+        if (
+            options.body &&
+            !(options.body instanceof FormData) &&
+            !headers.has(
+                "Content-Type"
+            )
+        ) {
+
+            headers.set(
+                "Content-Type",
+                "application/json"
+            );
+        }
+
+
+        const response =
+    await fetch(
+        new URL(url, "http://localhost:8000"),
+        {
+            ...options,
+            headers
+        }
+    );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            logout(
+                "Your session has expired. Please sign in again."
+            );
+
+            throw new Error(
+                "Authentication required."
+            );
+        }
+
+
+        const text =
+            await response.text();
+
+
+        let data = null;
+
+
+        if (text) {
+
+            try {
+                data =
+                    JSON.parse(text);
+            } catch {
+                data = text;
+            }
+        }
+
+
+        if (!response.ok) {
+
+            let message =
+                "Request failed.";
+
+
+            if (
+                data &&
+                typeof data === "object"
+            ) {
+
+                message =
+                    data.detail ||
+                    data.message ||
+                    message;
+
+            } else if (
+                typeof data === "string" &&
+                data
+            ) {
+
+                message =
+                    data;
+            }
+
+
+            throw new Error(
+                message
+            );
+        }
+
+
+        return data;
+    }
+
+
+    /* =========================================================
+       TOAST
+    ========================================================== */
+
+    let toastTimer = null;
+
+
+    function showToast(
+        message,
+        type = "success"
+    ) {
+
+        const toast =
+            $("toast");
+
+        toast.textContent =
+            message;
+
+        toast.className =
+            `toast visible ${type}`;
+
+
+        clearTimeout(
+            toastTimer
+        );
+
+
+        toastTimer =
+            setTimeout(
+                () => {
+
+                    toast.className =
+                        "toast";
+
+                },
+                4000
+            );
+    }
+
+
+    /* =========================================================
+       AUTH / USER
+    ========================================================== */
+
+    async function verifySession() {
+
+        const token =
+            getToken();
+
+        if (!token) {
+
+            window.location.href =
+                "/frontend/index.html";
+
+            return false;
+        }
+
+
+        currentUser =
+            getStoredUser();
+
+
+        /*
+         * Try to retrieve the authenticated user.
+         * The UI still works if this endpoint is not present
+         * because the stored login information is retained.
+         */
+
+        try {
+
+            const me =
+                await api(
+                    "/api/auth/me"
+                );
+
+
+            if (me) {
+
+                currentUser =
+                    me.user ||
+                    me;
+            }
+
+        } catch (error) {
+
+            /*
+             * Do not immediately redirect for a missing /me
+             * implementation. The token may still be valid.
+             */
+
+            console.warn(
+                "Could not retrieve /me:",
+                error.message
+            );
+        }
+
+
+        if (!currentUser) {
+
+            currentUser = {
+                username: "Researcher",
+                role: "user"
+            };
+        }
+
+
+        sessionStorage.setItem(
+            USER_KEY,
+            JSON.stringify(
+                currentUser
+            )
+        );
+
+
+        updateUserUI();
+
+        return true;
+    }
+
+
+    function getRole() {
+
+        return String(
+            currentUser?.role ||
+            currentUser?.user_role ||
+            "user"
+        ).toLowerCase();
+    }
+
+
+    function isAdmin() {
+
+        return (
+            getRole() ===
+            "admin"
+        );
+    }
+
+
+    function updateUserUI() {
+
+        const username =
+            currentUser?.username ||
+            currentUser?.name ||
+            currentUser?.email ||
+            "Researcher";
+
+        const role =
+            getRole();
+
+
+        $("sidebarUsername")
+            .textContent =
+            username;
+
+
+        $("sidebarRole")
+            .textContent =
+            role;
+
+
+        $("topUsername")
+            .textContent =
+            username;
+
+
+        $("topRole")
+            .textContent =
+            role === "admin"
+                ? "Administrator"
+                : "Research User";
+
+
+        $("statRole")
+            .textContent =
+            role === "admin"
+                ? "Admin"
+                : "User";
+
+
+        document
+            .querySelectorAll(
+                ".admin-only"
+            )
+            .forEach(
+                element => {
+
+                    element.classList.toggle(
+                        "hidden",
+                        !isAdmin()
+                    );
+                }
+            );
+    }
+
+
+    function logout(
+        message = ""
+    ) {
+
+        sessionStorage.removeItem(
+            TOKEN_KEY
+        );
+
+        sessionStorage.removeItem(
+            USER_KEY
+        );
+
+        /*
+         * Deliberately leave localStorage alone.
+         * If "remember" was selected on login, the user can
+         * return to the login page and be restored.
+         */
+
+        if (message) {
+
+            sessionStorage.setItem(
+                "smartresearch_logout_message",
+                message
+            );
+        }
+
+
+        window.location.href =
+            "/frontend/index.html";
+    }
+
+
+    $("logoutButton")
+        .addEventListener(
+            "click",
+            () => logout()
+        );
+
+
+    /* =========================================================
+       NAVIGATION
+    ========================================================== */
+
+    const sectionTitles = {
+        dashboard:
+            "Research Workspace",
+
+        search:
+            "Semantic Paper Search",
+
+        qa:
+            "Research Q&A",
+
+        repository:
+            "Research Repository",
+
+        admin:
+            "Repository Management"
+    };
+
+
+    function openSection(
+        section
+    ) {
+
+        if (
+            section === "admin" &&
+            !isAdmin()
+        ) {
+
+            showToast(
+                "Administrator access is required.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        currentSection =
+            section;
+
+
+        document
+            .querySelectorAll(
+                ".section"
+            )
+            .forEach(
+                element => {
+
+                    element.classList.toggle(
+                        "active",
+                        element.id ===
+                        `section-${section}`
+                    );
+                }
+            );
+
+
+        document
+            .querySelectorAll(
+                ".nav-button"
+            )
+            .forEach(
+                button => {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.section ===
+                        section
+                    );
+                }
+            );
+
+
+        $("pageTitle")
+            .textContent =
+            sectionTitles[
+                section
+            ] ||
+            "Research Workspace";
+
+
+        closeSidebar();
+
+
+        if (
+            section ===
+            "repository"
+        ) {
+
+            loadRepository();
+
+        }
+
+
+        if (
+            section ===
+            "admin"
+        ) {
+
+            loadAdminPapers();
+
+        }
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    document
+        .querySelectorAll(
+            ".nav-button[data-section]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        openSection(
+                            button.dataset.section
+                        );
+                    }
+                );
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            "[data-go-section]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        openSection(
+                            button.dataset.goSection
+                        );
+                    }
+                );
+            }
+        );
+
+
+    /* =========================================================
+       MOBILE SIDEBAR
+    ========================================================== */
+
+    function openSidebar() {
+
+        $("sidebar")
+            .classList.add(
+                "open"
+            );
+    }
+
+
+    function closeSidebar() {
+
+        $("sidebar")
+            .classList.remove(
+                "open"
+            );
+    }
+
+
+    $("menuButton")
+        .addEventListener(
+            "click",
+            () => {
+
+                $("sidebar")
+                    .classList.toggle(
+                        "open"
+                    );
+            }
+        );
+
+
+    /* =========================================================
+       DASHBOARD DATA
+    ========================================================== */
+
+    async function loadDashboardStats() {
+
+        try {
+
+            const paperData =
+                await api(
+                    "/api/papers/"
+                );
+
+
+            papers =
+                normalizeArray(
+                    paperData
+                );
+
+
+            $("dashboardPaperCount")
+                .textContent =
+                papers.length;
+
+
+            $("statPapers")
+                .textContent =
+                papers.length;
+
+
+            const uniqueDomains =
+                new Set(
+                    papers
+                        .map(
+                            paper =>
+                                String(
+                                    paper.domain ||
+                                    ""
+                                ).trim()
+                        )
+                        .filter(Boolean)
+                );
+
+
+            $("statDomains")
+                .textContent =
+                uniqueDomains.size;
+
+
+        } catch (error) {
+
+            console.error(
+                "Dashboard load error:",
+                error
+            );
+
+            $("dashboardPaperCount")
+                .textContent =
+                "—";
+
+            $("statPapers")
+                .textContent =
+                "—";
+
+            $("statDomains")
+                .textContent =
+                "—";
+        }
+    }
+
+
+    /* =========================================================
+       SEMANTIC SEARCH
+    ========================================================== */
+
+    $("searchForm")
+        .addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+
+                const query =
+                    $("searchInput")
+                        .value
+                        .trim();
+
+
+                if (!query) {
+
+                    showToast(
+                        "Enter a research query first.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                let topK =
+                    Number(
+                        $("searchTopK")
+                            .value
+                    );
+
+
+                if (
+                    !Number.isFinite(topK)
+                ) {
+                    topK = 5;
+                }
+
+
+                topK =
+                    Math.min(
+                        20,
+                        Math.max(
+                            1,
+                            topK
+                        )
+                    );
+
+
+                const button =
+                    $("searchButton");
+
+                const status =
+                    $("searchStatus");
+
+                const resultsContainer =
+                    $("searchResults");
+
+
+                button.disabled =
+                    true;
+
+
+                button.innerHTML =
+                    `
+                        <span class="loading">
+                            <span class="spinner"></span>
+                            Searching
+                        </span>
+                    `;
+
+
+                status.textContent =
+                    "Searching the semantic repository...";
+
+
+                resultsContainer.innerHTML =
+                    "";
+
+
+                try {
+
+                    const data =
+                        await api(
+                            "/api/search",
+                            {
+                                method: "POST",
+
+                                body:
+                                    JSON.stringify({
+                                        query,
+                                        top_k: topK
+                                    })
+                            }
+                        );
+
+
+                    const results =
+                        normalizeArray(
+                            data
+                        );
+
+
+                    /*
+                     * Important:
+                     * Always cap the displayed results to the
+                     * user's selected top-K, even if the backend
+                     * happens to return more records.
+                     */
+
+                    const visibleResults =
+                        results.slice(
+                            0,
+                            topK
+                        );
+
+
+                    renderSearchResults(
+                        visibleResults
+                    );
+
+
+                    status.textContent =
+                        visibleResults.length
+                            ? `Showing ${visibleResults.length} of ${results.length} retrieved result${results.length === 1 ? "" : "s"}.`
+                            : "No semantically relevant papers were found.";
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Search error:",
+                        error
+                    );
+
+
+                    resultsContainer.innerHTML =
+                        `
+                            <div class="empty">
+                                Search failed:
+                                ${escapeHtml(error.message)}
+                            </div>
+                        `;
+
+
+                    status.textContent =
+                        "Unable to complete semantic search.";
+
+                } finally {
+
+                    button.disabled =
+                        false;
+
+                    button.textContent =
+                        "Search";
+                }
+            }
+        );
+
+
+    function renderSearchResults(
+        results
+    ) {
+
+        const container =
+            $("searchResults");
+
+
+        if (
+            !results.length
+        ) {
+
+            container.innerHTML =
+                `
+                    <div class="empty">
+                        No research papers matched this query.
+                        Try using broader concepts or related
+                        research terminology.
+                    </div>
+                `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            results
+                .map(
+                    (paper, index) => {
+
+                        const id =
+                            paper.id ??
+                            paper.paper_id;
+
+
+                        const title =
+                            paper.title ||
+                            "Untitled Research Paper";
+
+
+                        const authors =
+                            paper.authors ||
+                            "Authors not listed";
+
+
+                        const domain =
+                            paper.domain ||
+                            "Unclassified";
+
+
+                        const year =
+                            paper.year ||
+                            "Year unavailable";
+
+
+                        const abstract =
+                            paper.abstract ||
+                            paper.content ||
+                            paper.text ||
+                            "No abstract or descriptive text is available.";
+
+
+                        const score =
+                            paper.score ??
+                            paper.similarity ??
+                            paper.final_score ??
+                            paper.distance;
+
+
+                        const scoreText =
+                            typeof score === "number"
+                                ? `Match ${score.toFixed(3)}`
+                                : `Result ${index + 1}`;
+
+
+                        return `
+                            <article class="result-card">
+
+                                <div class="result-top">
+
+                                    <div>
+                                        <h3 class="result-title">
+                                            ${escapeHtml(title)}
+                                        </h3>
+
+                                        <div class="result-meta">
+
+                                            <span class="tag">
+                                                ${escapeHtml(domain)}
+                                            </span>
+
+                                            <span class="tag">
+                                                ${escapeHtml(year)}
+                                            </span>
+
+                                            <span class="tag">
+                                                ${escapeHtml(authors)}
+                                            </span>
+
+                                        </div>
+                                    </div>
+
+                                    <span class="result-score">
+                                        ${escapeHtml(scoreText)}
+                                    </span>
+
+                                </div>
+
+
+                                <p class="result-abstract">
+                                    ${escapeHtml(
+                                        truncate(
+                                            abstract,
+                                            420
+                                        )
+                                    )}
+                                </p>
+
+
+                                <div class="result-actions">
+
+                                    ${
+                                        id !== undefined &&
+                                        id !== null
+                                            ? `
+                                                <button
+                                                    class="button small"
+                                                    type="button"
+                                                    data-open-pdf="${escapeHtml(id)}"
+                                                >
+                                                    Open PDF
+                                                </button>
+                                            `
+                                            : ""
+                                    }
+
+                                    ${
+                                        id !== undefined &&
+                                        id !== null
+                                            ? `
+                                                <button
+                                                    class="button secondary small"
+                                                    type="button"
+                                                    data-view-paper="${escapeHtml(id)}"
+                                                >
+                                                    View in Repository
+                                                </button>
+                                            `
+                                            : ""
+                                    }
+
+                                </div>
+
+                            </article>
+                        `;
+                    }
+                )
+                .join("");
+
+
+        bindDynamicPaperButtons();
+    }
+
+
+    /* =========================================================
+       PAPER / PDF BUTTONS
+    ========================================================== */
+
+    function bindDynamicPaperButtons() {
+
+        document
+            .querySelectorAll(
+                "[data-open-pdf]"
+            )
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            openPaperPdf(
+                                button.dataset.openPdf
+                            );
+                        }
+                    );
+                }
+            );
+
+
+        document
+            .querySelectorAll(
+                "[data-view-paper]"
+            )
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            openSection(
+                                "repository"
+                            );
+
+
+                            const id =
+                                Number(
+                                    button.dataset.viewPaper
+                                );
+
+
+                            setTimeout(
+                                () => {
+
+                                    highlightPaper(
+                                        id
+                                    );
+
+                                },
+                                150
+                            );
+                        }
+                    );
+                }
+            );
+    }
+
+
+
+function openPaperPdf(paperId) {
+    if (
+        paperId === undefined ||
+        paperId === null ||
+        paperId === ""
+    ) {
+        showToast(
+            "This paper does not have a valid repository ID.",
+            "error"
+        );
+        return;
+    }
+
+    const token = getToken();
+
+    // Open the tab immediately to reduce popup-blocking issues.
+    const pdfWindow = window.open("about:blank", "_blank");
+
+    if (!pdfWindow) {
+        showToast(
+            "Please allow pop-ups to open the PDF.",
+            "error"
+        );
+        return;
+    }
+
+    const pdfEndpoint = new URL(
+        `/api/papers/${encodeURIComponent(paperId)}/pdf`,
+        "http://localhost:8000"
+    );
+
+    fetch(pdfEndpoint, {
+        method: "GET",
+        headers: token
+            ? { Authorization: `Bearer ${token}` }
+            : {}
+    })
+        .then(async response => {
+            if (!response.ok) {
+                let message = "Unable to open the PDF.";
+
+                try {
+                    const data = await response.json();
+                    message = data.detail || message;
+                } catch (e) {
+                    // Keep the default error message.
+                }
+
+                throw new Error(
+                    `HTTP ${response.status}: ${message}`
+                );
+            }
+
+            return response.blob();
+        })
+        .then(blob => {
+            if (blob.size === 0) {
+                throw new Error("The PDF file is empty.");
+            }
+
+            const pdfUrl = URL.createObjectURL(blob);
+            pdfWindow.location.href = pdfUrl;
+
+            setTimeout(() => {
+                URL.revokeObjectURL(pdfUrl);
+            }, 60000);
+
+            showToast(
+                "PDF opened successfully.",
+                "success"
+            );
+        })
+        .catch(error => {
+            console.error("PDF error:", error);
+
+            if (!pdfWindow.closed) {
+                pdfWindow.close();
+            }
+
+            showToast(
+                error.message || "Unable to open PDF.",
+                "error"
+            );
+        });
+}
+
+
+    /* =========================================================
+       Q&A / RAG
+    ========================================================== */
+
+    $("qaForm")
+        .addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+
+                const question =
+                    $("qaQuestion")
+                        .value
+                        .trim();
+
+
+                if (!question) {
+
+                    showToast(
+                        "Enter a research question.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                let topK =
+                    Number(
+                        $("qaTopK")
+                            .value
+                    );
+
+
+                if (
+                    !Number.isFinite(topK)
+                ) {
+                    topK = 5;
+                }
+
+
+                const button =
+                    $("qaButton");
+
+
+                button.disabled =
+                    true;
+
+
+                button.innerHTML =
+                    `
+                        <span class="loading">
+                            <span class="spinner"></span>
+                            Retrieving Context
+                        </span>
+                    `;
+
+
+                $("qaStatus")
+                    .textContent =
+                    "Retrieving relevant research context and generating an answer...";
+
+
+                $("qaAnswer")
+                    .textContent =
+                    "Working on your research question...";
+
+
+                $("qaSources")
+                    .innerHTML =
+                    "";
+
+
+                try {
+
+                    const data =
+                        await api(
+                            "/api/qa",
+                            {
+                                method: "POST",
+
+                                body:
+                                    JSON.stringify({
+                                        question,
+                                        top_k: topK
+                                    })
+                            }
+                        );
+
+
+                    const answer =
+                        data.answer ||
+                        data.response ||
+                        data.result ||
+                        data.generated_answer ||
+                        data.message ||
+                        "No answer was returned.";
+
+
+                    $("qaAnswer")
+                        .textContent =
+                        answer;
+
+
+                    const sources =
+                        normalizeSources(
+                            data
+                        );
+
+
+                    renderSources(
+                        sources
+                    );
+
+
+                    $("qaStatus")
+                        .textContent =
+                        "Answer generated from retrieved research context.";
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Q&A error:",
+                        error
+                    );
+
+
+                    $("qaAnswer")
+                        .textContent =
+                        "Unable to generate an answer.";
+
+
+                    $("qaSources")
+                        .innerHTML =
+                        `
+                            <div class="empty">
+                                ${escapeHtml(error.message)}
+                            </div>
+                        `;
+
+
+                    $("qaStatus")
+                        .textContent =
+                        "Research Q&A request failed.";
+
+                } finally {
+
+                    button.disabled =
+                        false;
+
+                    button.textContent =
+                        "Ask Research Question";
+                }
+            }
+        );
+
+
+    function normalizeSources(
+        data
+    ) {
+
+        if (
+            data &&
+            Array.isArray(
+                data.sources
+            )
+        ) {
+            return data.sources;
+        }
+
+
+        if (
+            data &&
+            Array.isArray(
+                data.context
+            )
+        ) {
+            return data.context;
+        }
+
+
+        if (
+            data &&
+            Array.isArray(
+                data.references
+            )
+        ) {
+            return data.references;
+        }
+
+
+        if (
+            data &&
+            Array.isArray(
+                data.retrieved_documents
+            )
+        ) {
+            return data.retrieved_documents;
+        }
+
+
+        return [];
+    }
+
+
+    function renderSources(
+        sources
+    ) {
+
+        const container =
+            $("qaSources");
+
+
+        if (
+            !sources.length
+        ) {
+
+            container.innerHTML =
+                `
+                    <div class="empty">
+                        No source records were returned with
+                        this answer.
+                    </div>
+                `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            sources
+                .map(
+                    source => {
+
+                        const title =
+                            typeof source === "string"
+                                ? source
+                                : (
+                                    source.title ||
+                                    source.filename ||
+                                    source.paper_title ||
+                                    source.name ||
+                                    "Research source"
+                                );
+
+
+                        const id =
+                            typeof source === "object"
+                                ? (
+                                    source.id ??
+                                    source.paper_id
+                                )
+                                : null;
+
+
+                        return `
+                            <div class="source-item">
+
+                                ${
+                                    id !== null &&
+                                    id !== undefined
+                                        ? `
+                                            <button
+                                                class="button secondary small"
+                                                type="button"
+                                                data-source-pdf="${escapeHtml(id)}"
+                                                style="float:right;margin-left:8px;"
+                                            >
+                                                PDF
+                                            </button>
+                                        `
+                                        : ""
+                                }
+
+                                ${escapeHtml(title)}
+
+                            </div>
+                        `;
+                    }
+                )
+                .join("");
+
+
+        container
+            .querySelectorAll(
+                "[data-source-pdf]"
+            )
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            openPaperPdf(
+                                button.dataset.sourcePdf
+                            );
+                        }
+                    );
+                }
+            );
+    }
+
+
+    /* =========================================================
+       REPOSITORY
+    ========================================================== */
+
+    $("repositoryRefresh")
+        .addEventListener(
+            "click",
+            loadRepository
+        );
+
+
+    $("repositoryQuery")
+        .addEventListener(
+            "input",
+            renderRepository
+        );
+
+
+    $("repositoryDomain")
+        .addEventListener(
+            "change",
+            renderRepository
+        );
+
+
+    async function loadDomains() {
+
+        try {
+
+            const data =
+                await api(
+                    "/api/papers/domains"
+                );
+
+
+            domains =
+                normalizeArray(
+                    data
+                );
+
+
+            /*
+             * Support both:
+             * ["ML", "DS"]
+             * and
+             * [{domain:"ML"}, {domain:"DS"}]
+             */
+
+            domains =
+                domains
+                    .map(
+                        item => {
+
+                            if (
+                                typeof item ===
+                                "string"
+                            ) {
+                                return item;
+                            }
+
+                            return (
+                                item.domain ||
+                                item.name ||
+                                ""
+                            );
+                        }
+                    )
+                    .filter(Boolean)
+                    .sort(
+                        (a, b) =>
+                            String(a)
+                                .localeCompare(
+                                    String(b)
+                                )
+                    );
+
+
+            const select =
+                $("repositoryDomain");
+
+
+            select.innerHTML =
+                `
+                    <option value="">
+                        All domains
+                    </option>
+                `;
+
+
+            domains.forEach(
+                domain => {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        domain;
+
+                    option.textContent =
+                        domain;
+
+                    select.appendChild(
+                        option
+                    );
+                }
+            );
+
+
+        } catch (error) {
+
+            console.warn(
+                "Domain loading failed:",
+                error.message
+            );
+        }
+    }
+
+
+    async function loadRepository() {
+
+        const status =
+            $("repositoryStatus");
+
+
+        status.textContent =
+            "Loading research repository...";
+
+
+        $("repositoryList")
+            .innerHTML =
+            `
+                <div class="empty">
+                    Loading papers...
+                </div>
+            `;
+
+
+        try {
+
+            const data =
+                await api(
+                    "/api/papers/"
+                );
+
+
+            papers =
+                normalizeArray(
+                    data
+                );
+
+
+            renderRepository();
+
+
+            status.textContent =
+                `${papers.length} research paper${papers.length === 1 ? "" : "s"} available.`;
+
+
+            updateDashboardCounts();
+
+
+        } catch (error) {
+
+            console.error(
+                "Repository error:",
+                error
+            );
+
+
+            $("repositoryList")
+                .innerHTML =
+                `
+                    <div class="empty">
+                        Unable to load repository:
+                        ${escapeHtml(error.message)}
+                    </div>
+                `;
+
+
+            status.textContent =
+                "Repository request failed.";
+        }
+    }
+
+
+    function updateDashboardCounts() {
+
+        $("dashboardPaperCount")
+            .textContent =
+            papers.length;
+
+
+        $("statPapers")
+            .textContent =
+            papers.length;
+
+
+        const uniqueDomains =
+            new Set(
+                papers
+                    .map(
+                        paper =>
+                            String(
+                                paper.domain ||
+                                ""
+                            ).trim()
+                    )
+                    .filter(Boolean)
+            );
+
+
+        $("statDomains")
+            .textContent =
+            uniqueDomains.size;
+    }
+
+
+    function renderRepository() {
+
+        const query =
+            $("repositoryQuery")
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        const domain =
+            $("repositoryDomain")
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        const filtered =
+            papers.filter(
+                paper => {
+
+                    const searchable =
+                        [
+                            paper.title,
+                            paper.authors,
+                            paper.abstract,
+                            paper.domain,
+                            paper.filename
+                        ]
+                            .filter(Boolean)
+                            .join(" ")
+                            .toLowerCase();
+
+
+                    const matchesQuery =
+                        !query ||
+                        searchable.includes(
+                            query
+                        );
+
+
+                    const matchesDomain =
+                        !domain ||
+                        String(
+                            paper.domain ||
+                            ""
+                        )
+                            .toLowerCase() ===
+                        domain;
+
+
+                    return (
+                        matchesQuery &&
+                        matchesDomain
+                    );
+                }
+            );
+
+
+        const container =
+            $("repositoryList");
+
+
+        if (
+            !filtered.length
+        ) {
+
+            container.innerHTML =
+                `
+                    <div class="empty">
+                        No papers match the selected
+                        repository filters.
+                    </div>
+                `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            filtered
+                .map(
+                    paper =>
+                        renderPaperRow(
+                            paper
+                        )
+                )
+                .join("");
+
+
+        bindRepositoryButtons();
+    }
+
+
+    function renderPaperRow(
+        paper
+    ) {
+
+        const id =
+            paper.id ??
+            paper.paper_id;
+
+
+        const title =
+            paper.title ||
+            "Untitled Research Paper";
+
+
+        const authors =
+            paper.authors ||
+            "Authors not listed";
+
+
+        const domain =
+            paper.domain ||
+            "Unclassified";
+
+
+        const year =
+            paper.year ||
+            "Year unavailable";
+
+
+        const abstract =
+            paper.abstract ||
+            "No abstract available.";
+
+
+        return `
+            <article
+                class="paper-row"
+                id="paper-row-${escapeHtml(id)}"
+            >
+
+                <div>
+
+                    <h3 class="paper-title">
+                        ${escapeHtml(title)}
+                    </h3>
+
+
+                    <div class="paper-details">
+
+                        <span class="tag">
+                            ${escapeHtml(domain)}
+                        </span>
+
+                        <span class="tag">
+                            ${escapeHtml(year)}
+                        </span>
+
+                        <span class="tag">
+                            ${escapeHtml(authors)}
+                        </span>
+
+                        ${
+                            paper.filename
+                                ? `
+                                    <span class="tag">
+                                        ${escapeHtml(paper.filename)}
+                                    </span>
+                                `
+                                : ""
+                        }
+
+                    </div>
+
+
+                    <p class="paper-abstract">
+                        ${escapeHtml(
+                            truncate(
+                                abstract,
+                                350
+                            )
+                        )}
+                    </p>
+
+                </div>
+
+
+                <div class="paper-actions">
+
+                    ${
+                        id !== undefined &&
+                        id !== null
+                            ? `
+                                <button
+                                    class="button small"
+                                    type="button"
+                                    data-repository-pdf="${escapeHtml(id)}"
+                                >
+                                    Open PDF
+                                </button>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        isAdmin() &&
+                        id !== undefined &&
+                        id !== null
+                            ? `
+                                <button
+                                    class="button secondary small"
+                                    type="button"
+                                    data-edit-paper="${escapeHtml(id)}"
+                                >
+                                    Edit
+                                </button>
+
+                                <button
+                                    class="button danger small"
+                                    type="button"
+                                    data-delete-paper="${escapeHtml(id)}"
+                                >
+                                    Delete
+                                </button>
+                            `
+                            : ""
+                    }
+
+                </div>
+
+            </article>
+        `;
+    }
+
+
+    function bindRepositoryButtons() {
+
+        document
+            .querySelectorAll(
+                "[data-repository-pdf]"
+            )
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            openPaperPdf(
+                                button.dataset.repositoryPdf
+                            );
+                        }
+                    );
+                }
+            );
+
+
+        document
+            .querySelectorAll(
+                "[data-edit-paper]"
+            )
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            openEditModal(
+                                button.dataset.editPaper
+                            );
+                        }
+                    );
+                }
+            );
+
+
+        document
+            .querySelectorAll(
+                "[data-delete-paper]"
+            )
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            deletePaper(
+                                button.dataset.deletePaper
+                            );
+                        }
+                    );
+                }
+            );
+    }
+
+
+    function highlightPaper(
+        id
+    ) {
+
+        const row =
+            document.getElementById(
+                `paper-row-${id}`
+            );
+
+
+        if (!row) {
+            return;
+        }
+
+
+        row.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+
+        const original =
+            row.style.outline;
+
+
+        row.style.outline =
+            `2px solid ${getComputedStyle(document.documentElement).getPropertyValue("--gold")}`;
+
+
+        setTimeout(
+            () => {
+
+                row.style.outline =
+                    original;
+
+            },
+            2500
+        );
+    }
+
+
+    /* =========================================================
+       ADMIN — LOAD
+    ========================================================== */
+
+    $("adminRefresh")
+        .addEventListener(
+            "click",
+            loadAdminPapers
+        );
+
+
+    async function loadAdminPapers() {
+
+        if (!isAdmin()) {
+            return;
+        }
+
+
+        $("adminList")
+            .innerHTML =
+            `
+                <div class="empty">
+                    Loading papers...
+                </div>
+            `;
+
+
+        try {
+
+            const data =
+                await api(
+                    "/api/papers/"
+                );
+
+
+            papers =
+                normalizeArray(
+                    data
+                );
+
+
+            renderAdminList();
+
+            updateDashboardCounts();
+
+
+        } catch (error) {
+
+            console.error(
+                "Admin repository error:",
+                error
+            );
+
+
+            $("adminList")
+                .innerHTML =
+                `
+                    <div class="empty">
+                        ${escapeHtml(error.message)}
+                    </div>
+                `;
+        }
+    }
+
+
+    function renderAdminList() {
+
+        const container =
+            $("adminList");
+
+
+        if (
+            !papers.length
+        ) {
+
+            container.innerHTML =
+                `
+                    <div class="empty">
+                        No research papers exist yet.
+                    </div>
+                `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            papers
+                .map(
+                    paper => {
+
+                        const id =
+                            paper.id ??
+                            paper.paper_id;
+
+
+                        return `
+                            <div class="admin-row">
+
+                                <div>
+
+                                    <div class="admin-row-title">
+                                        ${escapeHtml(
+                                            paper.title ||
+                                            "Untitled Research Paper"
+                                        )}
+                                    </div>
+
+                                    <div class="admin-row-meta">
+                                        ID ${escapeHtml(id)}
+                                        ·
+                                        ${escapeHtml(
+                                            paper.domain ||
+                                            "Unclassified"
+                                        )}
+                                        ·
+                                        ${escapeHtml(
+                                            paper.filename ||
+                                            "No PDF filename"
+                                        )}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="admin-row-actions">
+
+                                    <button
+                                        class="button secondary small"
+                                        type="button"
+                                        data-admin-edit="${escapeHtml(id)}"
+                                    >
+                                        Edit
+                                    </button>
+
+                                    <button
+                                        class="button danger small"
+                                        type="button"
+                                        data-admin-delete="${escapeHtml(id)}"
+                                    >
+                                        Delete
+                                    </button>
+
+                                    <button
+                                        class="button small"
+                                        type="button"
+                                        data-admin-pdf="${escapeHtml(id)}"
+                                    >
+                                        PDF
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        `;
+                    }
+                )
+                .join("");
+
+
+        container
+            .querySelectorAll(
+                "[data-admin-edit]"
+            )
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            openEditModal(
+                                button.dataset.adminEdit
+                            );
+                        }
+                    );
+                }
+            );
+
+
+        container
+            .querySelectorAll(
+                "[data-admin-delete]"
+            )
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            deletePaper(
+                                button.dataset.adminDelete
+                            );
+                        }
+                    );
+                }
+            );
+
+
+        container
+            .querySelectorAll(
+                "[data-admin-pdf]"
+            )
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            openPaperPdf(
+                                button.dataset.adminPdf
+                            );
+                        }
+                    );
+                }
+            );
+    }
+
+
+    /* =========================================================
+       ADMIN — UPLOAD
+    ========================================================== */
+
+    $("uploadForm")
+        .addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+
+                if (!isAdmin()) {
+
+                    showToast(
+                        "Administrator access is required.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const file =
+                    $("uploadFile")
+                        .files[0];
+
+
+                if (!file) {
+
+                    showToast(
+                        "Select a PDF file first.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    !file.name
+                        .toLowerCase()
+                        .endsWith(".pdf")
+                ) {
+
+                    showToast(
+                        "Only PDF files can be uploaded.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const formData =
+                    new FormData();
+
+
+                /*
+                 * These field names match the common backend
+                 * upload structure. The PDF itself is sent as
+                 * "file".
+                 */
+
+                formData.append(
+                    "file",
+                    file
+                );
+
+
+                formData.append(
+                    "title",
+                    $("uploadTitle")
+                        .value
+                        .trim()
+                );
+
+
+                formData.append(
+                    "authors",
+                    $("uploadAuthors")
+                        .value
+                        .trim()
+                );
+
+
+                formData.append(
+                    "domain",
+                    $("uploadDomain")
+                        .value
+                        .trim()
+                );
+
+
+                const year =
+                    $("uploadYear")
+                        .value
+                        .trim();
+
+
+                if (year) {
+
+                    formData.append(
+                        "year",
+                        year
+                    );
+                }
+
+
+                formData.append(
+                    "abstract",
+                    $("uploadAbstract")
+                        .value
+                        .trim()
+                );
+
+
+                const button =
+                    $("uploadButton");
+
+
+                button.disabled =
+                    true;
+
+
+                button.innerHTML =
+                    `
+                        <span class="loading">
+                            <span class="spinner"></span>
+                            Uploading
+                        </span>
+                    `;
+
+
+                $("uploadStatus")
+                    .textContent =
+                    "Processing PDF, extracting text, generating chunks and indexing the paper...";
+
+
+                try {
+
+                    await api(
+                        "/api/admin/papers/upload",
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+
+                    showToast(
+                        "Research paper uploaded and indexed successfully.",
+                        "success"
+                    );
+
+
+                    $("uploadForm")
+                        .reset();
+
+
+                    $("uploadStatus")
+                        .textContent =
+                        "Upload completed successfully.";
+
+
+                    await loadRepository();
+
+                    await loadAdminPapers();
+
+                    await loadDomains();
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Upload error:",
+                        error
+                    );
+
+
+                    $("uploadStatus")
+                        .textContent =
+                        error.message;
+
+
+                    showToast(
+                        error.message ||
+                        "Upload failed.",
+                        "error"
+                    );
+
+                } finally {
+
+                    button.disabled =
+                        false;
+
+                    button.textContent =
+                        "Upload Paper";
+                }
+            }
+        );
+
+
+    /* =========================================================
+       ADMIN — EDIT
+    ========================================================== */
+
+    function findPaper(
+        id
+    ) {
+
+        return papers.find(
+            paper =>
+                String(
+                    paper.id ??
+                    paper.paper_id
+                ) ===
+                String(id)
+        );
+    }
+
+
+    function openEditModal(
+        id
+    ) {
+
+        if (!isAdmin()) {
+
+            showToast(
+                "Administrator access is required.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const paper =
+            findPaper(id);
+
+
+        if (!paper) {
+
+            showToast(
+                "Paper record could not be found.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        $("editId")
+            .value =
+            paper.id ??
+            paper.paper_id;
+
+
+        $("editTitle")
+            .value =
+            paper.title ||
+            "";
+
+
+        $("editAuthors")
+            .value =
+            paper.authors ||
+            "";
+
+
+        $("editDomain")
+            .value =
+            paper.domain ||
+            "";
+
+
+        $("editYear")
+            .value =
+            paper.year ||
+            "";
+
+
+        $("editAbstract")
+            .value =
+            paper.abstract ||
+            "";
+
+
+        $("editStatus")
+            .textContent =
+            "";
+
+
+        $("editModal")
+            .classList.add(
+                "visible"
+            );
+
+
+        $("editModal")
+            .setAttribute(
+                "aria-hidden",
+                "false"
+            );
+    }
+
+
+    function closeEditModal() {
+
+        $("editModal")
+            .classList.remove(
+                "visible"
+            );
+
+
+        $("editModal")
+            .setAttribute(
+                "aria-hidden",
+                "true"
+            );
+    }
+
+
+    $("editClose")
+        .addEventListener(
+            "click",
+            closeEditModal
+        );
+
+
+    $("editCancel")
+        .addEventListener(
+            "click",
+            closeEditModal
+        );
+
+
+    $("editModal")
+        .addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target ===
+                    $("editModal")
+                ) {
+
+                    closeEditModal();
+                }
+            }
+        );
+
+
+    $("editForm")
+        .addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+
+                if (!isAdmin()) {
+
+                    showToast(
+                        "Administrator access is required.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const id =
+                    $("editId")
+                        .value;
+
+
+                const payload = {
+                    title:
+                        $("editTitle")
+                            .value
+                            .trim(),
+
+                    authors:
+                        $("editAuthors")
+                            .value
+                            .trim(),
+
+                    domain:
+                        $("editDomain")
+                            .value
+                            .trim(),
+
+                    year:
+                        $("editYear")
+                            .value
+                            .trim()
+                                ? Number(
+                                    $("editYear")
+                                        .value
+                                        .trim()
+                                )
+                                : null,
+
+                    abstract:
+                        $("editAbstract")
+                            .value
+                            .trim()
+                };
+
+
+                if (!payload.title) {
+
+                    $("editStatus")
+                        .textContent =
+                        "Title is required.";
+
+                    return;
+                }
+
+
+                const button =
+                    $("editSave");
+
+
+                button.disabled =
+                    true;
+
+
+                button.textContent =
+                    "Saving...";
+
+
+                $("editStatus")
+                    .textContent =
+                    "Updating paper record...";
+
+
+                try {
+
+                    await api(
+                        `/api/papers/${encodeURIComponent(id)}`,
+                        {
+                            method: "PUT",
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+
+
+                    closeEditModal();
+
+
+                    showToast(
+                        "Research paper updated successfully.",
+                        "success"
+                    );
+
+
+                    await loadRepository();
+
+                    if (isAdmin()) {
+                        await loadAdminPapers();
+                    }
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Update error:",
+                        error
+                    );
+
+
+                    $("editStatus")
+                        .textContent =
+                        error.message;
+
+
+                    showToast(
+                        error.message ||
+                        "Unable to update paper.",
+                        "error"
+                    );
+
+                } finally {
+
+                    button.disabled =
+                        false;
+
+                    button.textContent =
+                        "Save Changes";
+                }
+            }
+        );
+
+
+    /* =========================================================
+       ADMIN — DELETE
+    ========================================================== */
+
+    async function deletePaper(
+        id
+    ) {
+
+        if (!isAdmin()) {
+
+            showToast(
+                "Administrator access is required.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const paper =
+            findPaper(id);
+
+
+        const title =
+            paper?.title ||
+            `paper #${id}`;
+
+
+        const confirmed =
+            window.confirm(
+                `Delete "${title}"?\n\nThis action cannot be undone.`
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            await api(
+                `/api/papers/${encodeURIComponent(id)}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+            showToast(
+                "Research paper deleted successfully.",
+                "success"
+            );
+
+
+            await loadRepository();
+
+            await loadAdminPapers();
+
+            await loadDomains();
+
+
+        } catch (error) {
+
+            console.error(
+                "Delete error:",
+                error
+            );
+
+
+            showToast(
+                error.message ||
+                "Unable to delete paper.",
+                "error"
+            );
+        }
+    }
+
+
+    /* =========================================================
+       KEYBOARD / MODAL
+    ========================================================== */
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                closeEditModal();
+
+                closeSidebar();
+            }
+        }
+    );
+
+
+    /* =========================================================
+       INITIALIZATION
+    ========================================================== */
+
+    async function initializeApp() {
+
+        const authenticated =
+            await verifySession();
+
+
+        if (!authenticated) {
+            return;
+        }
+
+
+        await Promise.allSettled([
+            loadDashboardStats(),
+            loadDomains()
+        ]);
+
+
+        /*
+         * If an old logout message exists, show it once.
+         */
+
+        const logoutMessage =
+            sessionStorage.getItem(
+                "smartresearch_logout_message"
+            );
+
+
+        if (logoutMessage) {
+
+            sessionStorage.removeItem(
+                "smartresearch_logout_message"
+            );
+
+            showToast(
+                logoutMessage,
+                "error"
+            );
+        }
+
+
+        /*
+         * Repository data is useful immediately because it
+         * powers the dashboard statistics and repository view.
+         */
+
+        await loadRepository();
+
+
+        if (isAdmin()) {
+
+            await loadAdminPapers();
+        }
+
+
+        openSection(
+            "dashboard"
+        );
+    }
+
+
+    initializeApp();
+</script>
+
+</body>
+</html>

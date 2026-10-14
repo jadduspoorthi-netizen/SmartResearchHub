@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>SmartResearch Hub — Sign In</title>
+
+    <style>
+        :root {
+            --paper: #f4efe3;
+            --paper-light: #faf7ef;
+            --paper-deep: #e8dfcc;
+
+            --ink: #25251f;
+            --ink-soft: #4e4d43;
+            --muted: #777365;
+
+            --olive: #59604b;
+            --olive-dark: #414836;
+
+            --rust: #a64b32;
+            --rust-dark: #823a27;
+
+            --gold: #b58a45;
+
+            --line: rgba(48, 48, 39, 0.16);
+            --line-strong: rgba(48, 48, 39, 0.28);
+
+            --shadow:
+                0 24px 70px rgba(45, 40, 28, 0.16);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            color: var(--ink);
+
+            background:
+                radial-gradient(
+                    circle at 20% 10%,
+                    rgba(181, 138, 69, 0.08),
+                    transparent 28%
+                ),
+                var(--paper);
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        ::selection {
+            background: rgba(166, 75, 50, 0.18);
+        }
+
+        .page {
+            min-height: 100vh;
+
+            display: grid;
+            grid-template-columns:
+                minmax(0, 1.05fr)
+                minmax(420px, 0.95fr);
+        }
+
+        /* =====================================================
+           LEFT PANEL
+        ===================================================== */
+
+        .visual-panel {
+            position: relative;
+            min-height: 100vh;
+
+            overflow: hidden;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            padding: 42px;
+
+            color: #f8f2e4;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(31, 34, 27, 0.48),
+                    rgba(31, 34, 27, 0.78)
+                ),
+                url("/frontend/bga.jpg")
+                center / cover no-repeat;
+
+            isolation: isolate;
+        }
+
+        .visual-panel::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(53, 58, 43, 0.70),
+                    rgba(28, 29, 24, 0.58)
+                );
+
+            z-index: -1;
+        }
+
+        .visual-panel::after {
+            content: "";
+
+            position: absolute;
+            inset: 18px;
+
+            border:
+                1px solid rgba(248, 242, 228, 0.28);
+
+            pointer-events: none;
+        }
+
+        .brand {
+            position: relative;
+            z-index: 2;
+
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-mark {
+            width: 48px;
+            height: 48px;
+
+            display: grid;
+            place-items: center;
+
+            border:
+                1px solid rgba(248, 242, 228, 0.55);
+
+            color: #f8f2e4;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            background:
+                rgba(25, 27, 22, 0.34);
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 700;
+
+            letter-spacing: 0.2px;
+        }
+
+        .brand-subtitle {
+            margin-top: 4px;
+
+            color: rgba(248, 242, 228, 0.70);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .visual-content {
+            position: relative;
+            z-index: 2;
+
+            max-width: 650px;
+        }
+
+        .small-label {
+            display: inline-block;
+
+            margin-bottom: 17px;
+
+            padding-bottom: 7px;
+
+            border-bottom:
+                1px solid rgba(181, 138, 69, 0.72);
+
+            color: #dfc58f;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .visual-content h1 {
+            margin: 0;
+
+            max-width: 620px;
+
+            font-size:
+                clamp(44px, 5.5vw, 78px);
+
+            line-height: 0.98;
+
+            letter-spacing: -2.8px;
+
+            font-weight: 700;
+        }
+
+        .visual-content h1 em {
+            color: #d4b873;
+            font-style: italic;
+        }
+
+        .visual-description {
+            max-width: 570px;
+
+            margin: 25px 0 0;
+
+            color: rgba(248, 242, 228, 0.78);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        .technology-line {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+
+            margin-top: 25px;
+        }
+
+        .technology-line span {
+            padding: 7px 10px;
+
+            border:
+                1px solid rgba(248, 242, 228, 0.20);
+
+            color: rgba(248, 242, 228, 0.82);
+
+            background:
+                rgba(20, 22, 18, 0.28);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .visual-footer {
+            position: relative;
+            z-index: 2;
+
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+
+            padding-top: 20px;
+
+            border-top:
+                1px solid rgba(248, 242, 228, 0.20);
+
+            color: rgba(248, 242, 228, 0.60);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* =====================================================
+           LOGIN PANEL
+        ===================================================== */
+
+        .login-panel {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 45px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--paper-light),
+                    var(--paper)
+                );
+        }
+
+        .login-card {
+            width: min(430px, 100%);
+        }
+
+        .archive-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-bottom: 25px;
+
+            color: var(--olive);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1.7px;
+        }
+
+        .archive-mark::before {
+            content: "";
+
+            width: 22px;
+            height: 1px;
+
+            background: var(--gold);
+        }
+
+        .login-card h2 {
+            margin: 0;
+
+            font-size: 39px;
+
+            line-height: 1.04;
+
+            letter-spacing: -1.3px;
+        }
+
+        .login-intro {
+            margin: 12px 0 0;
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 12px;
+            line-height: 1.65;
+        }
+
+        .form {
+            margin-top: 30px;
+        }
+
+        .field {
+            margin-bottom: 17px;
+        }
+
+        .field label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: var(--ink-soft);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+            font-weight: 750;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input {
+            width: 100%;
+
+            min-height: 48px;
+
+            padding:
+                0 13px;
+
+            border:
+                1px solid var(--line-strong);
+
+            outline: none;
+
+            border-radius: 0;
+
+            color: var(--ink);
+
+            background:
+                rgba(255, 255, 255, 0.46);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 13px;
+
+            transition:
+                border-color 0.18s ease,
+                box-shadow 0.18s ease,
+                background 0.18s ease;
+        }
+
+        .input.password {
+            padding-right: 82px;
+        }
+
+        .input::placeholder {
+            color: #aaa397;
+        }
+
+        .input:focus {
+            border-color: var(--olive);
+
+            background: #fffdf7;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(89, 96, 75, 0.09);
+        }
+
+        .password-toggle {
+            position: absolute;
+
+            right: 10px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            border: 0;
+
+            padding: 5px;
+
+            color: var(--olive);
+
+            background: transparent;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+            font-weight: 750;
+
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+
+            margin-top: 2px;
+        }
+
+        .remember {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+        }
+
+        .remember input {
+            accent-color: var(--olive);
+        }
+
+        .help {
+            color: var(--rust);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        .help:hover {
+            color: var(--rust-dark);
+            text-decoration: underline;
+        }
+
+        .submit {
+            width: 100%;
+
+            min-height: 50px;
+
+            margin-top: 22px;
+
+            border: 0;
+
+            color: #faf7ef;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--olive-dark),
+                    var(--olive)
+                );
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+
+            transition:
+                transform 0.18s ease,
+                filter 0.18s ease;
+        }
+
+        .submit:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.07);
+        }
+
+        .submit:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin: 27px 0 21px;
+
+            color: #a29c8d;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+
+            height: 1px;
+            flex: 1;
+
+            background: var(--line);
+        }
+
+        .register-text {
+            text-align: center;
+
+            color: var(--muted);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 11px;
+        }
+
+        .register-link {
+            color: var(--rust);
+
+            font-weight: 800;
+
+            text-decoration: none;
+        }
+
+        .register-link:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 11px 12px;
+
+            border:
+                1px solid rgba(166, 75, 50, 0.24);
+
+            color: var(--rust-dark);
+
+            background:
+                rgba(166, 75, 50, 0.06);
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .message.visible {
+            display: block;
+        }
+
+        .message.success {
+            border-color:
+                rgba(89, 96, 75, 0.28);
+
+            color: var(--olive-dark);
+
+            background:
+                rgba(89, 96, 75, 0.07);
+        }
+
+        .security-note {
+            margin-top: 26px;
+
+            padding-top: 17px;
+
+            border-top:
+                1px solid var(--line);
+
+            color: #989183;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            font-size: 9px;
+
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+            .page {
+                grid-template-columns: 1fr;
+            }
+
+            .visual-panel {
+                min-height: 460px;
+
+                padding: 30px;
+            }
+
+            .visual-content {
+                margin-top: 70px;
+            }
+
+            .login-panel {
+                min-height: auto;
+
+                padding:
+                    50px 28px 60px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .visual-panel {
+                min-height: 420px;
+
+                padding: 24px;
+            }
+
+            .visual-panel::after {
+                inset: 12px;
+            }
+
+            .visual-content h1 {
+                font-size: 43px;
+            }
+
+            .visual-description {
+                font-size: 12px;
+            }
+
+            .visual-footer {
+                flex-direction: column;
+                gap: 7px;
+            }
+
+            .login-panel {
+                padding:
+                    42px 22px 50px;
+            }
+
+            .login-card h2 {
+                font-size: 34px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- =====================================================
+         VISUAL / BRAND PANEL
+    ====================================================== -->
+
+    <section class="visual-panel">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                SR
+            </div>
+
+            <div>
+
+                <div class="brand-name">
+                    SmartResearch Hub
+                </div>
+
+                <div class="brand-subtitle">
+                    AI-Powered Semantic Knowledge Repository
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="visual-content">
+
+            <div class="small-label">
+                Research Intelligence Platform
+            </div>
+
+            <h1>
+                Search beyond
+                <em>keywords.</em>
+            </h1>
+
+            <p class="visual-description">
+                Discover research by meaning. Explore semantic
+                paper retrieval, vector representations,
+                retrieval-augmented question answering and
+                an organized academic knowledge repository.
+            </p>
+
+
+            <div class="technology-line">
+
+                <span>Semantic Search</span>
+                <span>RAG</span>
+                <span>PostgreSQL</span>
+                <span>pgvector</span>
+                <span>FastAPI</span>
+                <span>Sentence Transformers</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="visual-footer">
+
+            <span>
+                Academic Research Repository
+            </span>
+
+            <span>
+                Search Smarter • Understand More
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         LOGIN PANEL
+    ====================================================== -->
+
+    <main class="login-panel">
+
+        <div class="login-card">
+
+            <div class="archive-mark">
+                Research Archive
+            </div>
+
+
+            <h2>
+                Welcome back.
+            </h2>
+
+
+            <p class="login-intro">
+                Sign in to continue exploring the SmartResearch
+                Hub knowledge repository.
+            </p>
+
+
+            <form
+                class="form"
+                id="loginForm"
+            >
+
+                <div class="field">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input
+                        class="input"
+                        id="username"
+                        name="username"
+                        type="text"
+                        autocomplete="username"
+                        placeholder="Enter your username"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrap">
+
+                        <input
+                            class="input password"
+                            id="password"
+                            name="password"
+                            type="password"
+                            autocomplete="current-password"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                        <button
+                            class="password-toggle"
+                            id="passwordToggle"
+                            type="button"
+                        >
+                            Show
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-options">
+
+                    <label class="remember">
+
+                        <input
+                            id="remember"
+                            type="checkbox"
+                        >
+
+                        Remember this session
+
+                    </label>
+
+
+                    <a
+                        class="help"
+                        href="#"
+                        id="loginHelp"
+                    >
+                        Login help
+                    </a>
+
+                </div>
+
+
+                <button
+                    class="submit"
+                    id="loginButton"
+                    type="submit"
+                >
+                    Sign In
+                </button>
+
+
+                <div
+                    class="message"
+                    id="loginMessage"
+                ></div>
+
+            </form>
+
+
+            <div class="divider">
+                New researcher?
+            </div>
+
+
+            <div class="register-text">
+
+                Create an account to access the repository.
+
+                <a
+                    class="register-link"
+                    href="/frontend/register.html"
+                >
+                    Register
+                </a>
+
+            </div>
+
+
+            <div class="security-note">
+                Your authenticated session is protected by
+                token-based access control. Administrative
+                repository operations are available only to
+                authorized administrator accounts.
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+    const TOKEN_KEY =
+        "smartresearch_access_token";
+
+    const USER_KEY =
+        "smartresearch_user";
+
+
+    function showMessage(
+        message,
+        type = ""
+    ) {
+        const element =
+            document.getElementById(
+                "loginMessage"
+            );
+
+        element.textContent =
+            message;
+
+        element.className =
+            "message visible " + type;
+    }
+
+
+    function clearMessage() {
+        const element =
+            document.getElementById(
+                "loginMessage"
+            );
+
+        element.className =
+            "message";
+
+        element.textContent =
+            "";
+    }
+
+
+    function setLoading(
+        loading
+    ) {
+        const button =
+            document.getElementById(
+                "loginButton"
+            );
+
+        button.disabled =
+            loading;
+
+        button.textContent =
+            loading
+                ? "Signing In..."
+                : "Sign In";
+    }
+
+
+    function saveSession(
+        token,
+        user,
+        remember
+    ) {
+        sessionStorage.setItem(
+            TOKEN_KEY,
+            token
+        );
+
+        sessionStorage.setItem(
+            USER_KEY,
+            JSON.stringify(user)
+        );
+
+        /*
+         * Keep the session in sessionStorage by default.
+         * If the user selected remember, also keep a copy
+         * in localStorage so the browser can restore it.
+         */
+
+        if (remember) {
+
+            localStorage.setItem(
+                TOKEN_KEY,
+                token
+            );
+
+            localStorage.setItem(
+                USER_KEY,
+                JSON.stringify(user)
+            );
+
+        } else {
+
+            localStorage.removeItem(
+                TOKEN_KEY
+            );
+
+            localStorage.removeItem(
+                USER_KEY
+            );
+        }
+    }
+
+
+    function restoreRememberedSession() {
+
+        const token =
+            localStorage.getItem(
+                TOKEN_KEY
+            );
+
+        const user =
+            localStorage.getItem(
+                USER_KEY
+            );
+
+        if (!token) {
+            return;
+        }
+
+        sessionStorage.setItem(
+            TOKEN_KEY,
+            token
+        );
+
+        if (user) {
+            sessionStorage.setItem(
+                USER_KEY,
+                user
+            );
+        }
+
+        window.location.href =
+            "/frontend/app.html";
+    }
+
+
+    document
+        .getElementById("passwordToggle")
+        .addEventListener(
+            "click",
+            () => {
+
+                const password =
+                    document.getElementById(
+                        "password"
+                    );
+
+                const toggle =
+                    document.getElementById(
+                        "passwordToggle"
+                    );
+
+                const visible =
+                    password.type ===
+                    "text";
+
+                password.type =
+                    visible
+                        ? "password"
+                        : "text";
+
+                toggle.textContent =
+                    visible
+                        ? "Show"
+                        : "Hide";
+            }
+        );
+
+
+    document
+        .getElementById("loginHelp")
+        .addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                showMessage(
+                    "Enter the username and password created during registration. If you do not have an account, use Register below."
+                );
+            }
+        );
+
+
+    document
+        .getElementById("loginForm")
+        .addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                clearMessage();
+
+                const username =
+                    document
+                        .getElementById(
+                            "username"
+                        )
+                        .value
+                        .trim();
+
+                const password =
+                    document
+                        .getElementById(
+                            "password"
+                        )
+                        .value;
+
+                const remember =
+                    document
+                        .getElementById(
+                            "remember"
+                        )
+                        .checked;
+
+
+                if (
+                    !username ||
+                    !password
+                ) {
+
+                    showMessage(
+                        "Please enter both username and password.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                setLoading(true);
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "http://localhost:8000/api/auth/login",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify({
+                                        username,
+                                        password
+                                    })
+                            }
+                        );
+
+
+                    const text =
+                        await response.text();
+
+
+                    let data;
+
+                    try {
+
+                        data =
+                            text
+                                ? JSON.parse(text)
+                                : {};
+
+                    } catch {
+
+                        data = {
+                            detail:
+                                text ||
+                                "Login failed."
+                        };
+                    }
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.detail ||
+                            data.message ||
+                            "Invalid username or password."
+                        );
+                    }
+
+
+                    const token =
+                        data.access_token ||
+                        data.token;
+
+
+                    const user =
+                        data.user ||
+                        {
+                            username
+                        };
+
+
+                    if (!token) {
+
+                        throw new Error(
+                            "Login succeeded but no access token was returned."
+                        );
+                    }
+
+
+                    saveSession(
+                        token,
+                        user,
+                        remember
+                    );
+
+
+                    showMessage(
+                        "Sign in successful. Opening your research workspace...",
+                        "success"
+                    );
+
+
+                    setTimeout(
+                        () => {
+
+                            window.location.href =
+                                "/frontend/app.html";
+
+                        },
+                        350
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Login error:",
+                        error
+                    );
+
+                    showMessage(
+                        error.message ||
+                        "Unable to sign in."
+                    );
+
+                } finally {
+
+                    setLoading(false);
+                }
+            }
+        );
+
+
+    /*
+     * Only restore a remembered session when the user
+     * explicitly chose the remember option previously.
+     */
+
+    if (
+        localStorage.getItem(
+            TOKEN_KEY
+        )
+    ) {
+        restoreRememberedSession();
+    }
+</script>
+
+</body>
+</html>

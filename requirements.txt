@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+psycopg2-binary
+pgvector
+pymongo
+kafka-python
+PyMuPDF
+sentence-transformers
+numpy
+bcrypt
+PyJWT
+pydantic
+pydantic-settings
+redis
+email-validator
